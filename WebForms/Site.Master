@@ -1,0 +1,56 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.Master.cs" Inherits="Site" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>DXHotels Demo | ASP.NET Controls by DevExpress</title>
+    <link href="~/Content/Styles.css" rel="stylesheet" />
+    <script src="Content/jquery.min.js" type="text/javascript"></script>
+    <script src="Content/Scripts.js" type="text/javascript"></script>
+    <asp:ContentPlaceHolder ID="HeadContentPlaceHolder" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="page">
+            <dx:Header runat="server" ID="HeaderControl" />
+            <div>
+                <asp:ContentPlaceHolder ID="MainContentPlaceHolder" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+            <div class="footer">
+                <div class="columns content-column">
+                    <div class="column rightBorder">
+                        <h5>Getting Started Today</h5>
+                        <div class="text">The DevExpress ASP.NET Subscription includes 110+ WebForm Controls and 70+ MVC Extensions.</div>
+                        <div class="text"><a class="orangeLink" href="https://www.devexpress.com/products/try/">Download your free 30-day trial</a></div>
+                    </div>
+                    <div class="column rightBorder">
+                        <h5>We Are Here To Help</h5>
+                        <div class="text">Tell us how we can help you build the next great asp.net web app.</div>
+                        <div class="text"><a class="orangeLink" href="mailto:info@devexpress.com">info@devexpress.com</a></div>
+                    </div>
+                    <div class="column">
+                        <h5>The Following DevExpress ASP.NET Controls Were Used On This Page</h5>
+                        <div class="text">
+                            <asp:ContentPlaceHolder ID="FooterControlsPlaceHolder" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="info">
+                    <div class="content-column">
+                        <div class="copyright">
+                            Copyright (c) <%:DateTime.Today.Year.ToString()%> Developer Express Inc.<br />This website demonstrates use of DevExpress ASP.NET Controls. Hotel rooms cannot be booked using this website.
+                        </div>
+                        <div class="logo">
+                            <dx:ASPxHyperLink ID="DevExpressHyperLink" runat="server" ImageUrl="~/Content/Images/172x35.svg" Width="172px" Height="35px" NavigateUrl="http://www.devexpress.com/">
+                            </dx:ASPxHyperLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,151 @@
+﻿@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+<div class="header">
+    <div class="content-column">
+        <div class="logo">
+            <a href="/"><img src="/Content/Images/Header.png" /></a>
+        </div>
+        <div class="buttons">
+            <div id="contact-elem" class="orangeButton contact-button" @onclick="@(() => ShowContactDropDown = !ShowContactDropDown)">
+                Contact Us
+            </div>
+
+            <div id="login-elem" class="orangeButton login-button" @onclick="@(() => ShowLoginPopup = !ShowLoginPopup)">
+                Login
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <DxPopup @bind-Visible="@ShowLoginPopup"
+            VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" ShowHeader="true" 
+            ShowFooter="true"
+             ShowCloseButton="false" Width="608px" CssClass="loginPopup">
+        <HeaderTemplate>
+            <div class="title">
+                LOGIN FORM
+            </div>
+        </HeaderTemplate>
+        <BodyTemplate Context="popupBodyCtx">       
+            <EditForm @ref="loginForm" Model="@loginModel" id="login-form" Context="frmContext" OnValidSubmit="@InitiateLogin">
+                <DataAnnotationsValidator />
+                <DxFormLayout CaptionPosition="CaptionPosition.Vertical" CssClass="formLayout" Context="layoutContext">
+                    <DxFormLayoutItem Caption=" " ColSpanMd="12">
+                        <DxTextBox NullText="Email" @bind-Text="@loginModel.Email" ShowValidationIcon="true"></DxTextBox>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption=" " ColSpanMd="12">
+                        <DxTextBox NullText="Password" @bind-Text="@loginModel.Password" Password="true"></DxTextBox>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption=" " ColSpanMd="12">
+                        <div style="padding-bottom: 10px;">
+                            <Captcha @bind-CaptchaWord="@loginModel.CaptchaCheck" CharNumber="@loginModel.CaptchaChars" />
+                        </div>
+                        <DxTextBox NullText="Enter code" @bind-Text="@loginModel.Captcha"></DxTextBox>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption=" " ColSpanMd="12">
+                        <ValidationSummary></ValidationSummary>
+                    </DxFormLayoutItem>
+                </DxFormLayout>
+            </EditForm>
+        </BodyTemplate>
+        <FooterTemplate>
+                <div class="buttons">
+                    <div class="buttonsContainer">
+                        <button type="submit" form="login-form" class="btn btn-primary">Login</button>                        
+                        <button type="button" class="btn btn-light" @onclick="@(()=>ShowLoginPopup=false)">Cancel</button>                        
+                    </div>
+                </div>
+        </FooterTemplate>
+    </DxPopup>
+    
+
+    <DxDropDown @bind-IsOpen="@ShowContactDropDown" style="background-color: white"
+                HeaderVisible="false"                
+                PositionMode="DropDownPositionMode.Bottom"
+                Width="460px"
+                PositionTarget="#login-elem"                
+                CloseMode="DropDownCloseMode.Close"
+                PreventCloseOnPositionTargetClick="true">
+        <BodyContentTemplate>
+			    <div class="contactUs">
+                    <h2 class="title">Your Next Great Web App Starts Here</h2>
+                    <br />
+                    <div class="text">
+                        To learn more about DevExpress Subscriptions and obtain pricing
+                        <br/>
+                        information, visit our <a class="orangeLink" href="https://www.devexpress.com/Subscriptions/">Compare Features and Pricing</a> webpage.
+                    </div>
+                    <br />
+                    <div class="text">
+                        If you have any questions or require assistance, call us at
+                        <br />
+                        +1 (818) 844-3383 between 7:30am and 4:30pm Pacific Time
+                        <br/>
+                        or email <a class="orangeLink" href="mailto:info@devexpress.com">info@devexpress.com</a>
+                    </div>
+                    <br />
+				    <div class="text">
+                        Download your free <a class="orangeLink" href="https://www.devexpress.com/products/try/">30-day trial</a> today.
+				    </div>
+                    <br />
+					<div class="contact-close-button"  @onclick="@((e) => ShowContactDropDown = false)">
+						Close
+					</div>
+			    </div>
+        </BodyContentTemplate>
+    </DxDropDown>
+</div>
+
+@code {
+    public class LoginModel
+    {
+        [Required()]
+        [EmailAddress()]
+        public string Email { get; set; } = default!;
+        [Required()]
+        public string Password { get; set; } = default!;
+        [Required()]
+        [Compare(nameof(LoginModel.CaptchaCheck))]
+        public string Captcha { get; set; } = default!;
+        public string CaptchaCheck { get; set; } = default!;
+
+        public int CaptchaChars { get; set; } = 5;
+    }
+
+    void InitiateLogin()
+    {
+        ShowLoginPopup = false;
+        loginModel.Email = string.Empty;
+        loginModel.Password = string.Empty;
+        loginModel.Captcha = string.Empty;        
+    }
+
+    protected EditForm loginForm = default!;
+    protected LoginModel loginModel = new LoginModel();
+
+    private bool _ShowLoginPopup = false;
+
+    protected bool ShowLoginPopup {
+        get => _ShowLoginPopup;
+        set
+        {
+            if (value != _ShowLoginPopup)
+            {
+                _ShowLoginPopup = value;
+                InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+    protected async override Task OnInitializedAsync()
+    {
+        loginModel.CaptchaCheck = BlazorCaptcha.Tools.GetCaptchaWord(loginModel.CaptchaChars);
+        await base.OnInitializedAsync();
+    }
+
+    protected bool ShowContactDropDown { get; set; } = false;
+
+    void LoginPopupShowing(PopupShowingEventArgs args)
+    {
+        loginModel.CaptchaCheck = BlazorCaptcha.Tools.GetCaptchaWord(loginModel.CaptchaChars);
+    }
+}

@@ -1,0 +1,11 @@
+﻿@inherits DevExtremeBaseWidget
+@typeparam TItem
+
+<DevExtremeLoader ResourcesLoaded="@(() => ResourcesLoaded = true)" />
+
+ @if (ResourcesLoaded) {
+    <div @ref="DXWidget"></div>
+}
+
+
+ 

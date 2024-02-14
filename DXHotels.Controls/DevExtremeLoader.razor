@@ -1,0 +1,34 @@
+﻿@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+@code {    
+    private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+
+    [Parameter] public EventCallback ResourcesLoaded { get; set; }
+
+    public DevExtremeLoader()
+    {
+        moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>(
+            "import", "./_content/DXHotels.Controls/DevExtremeLoader.razor.js").AsTask());
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            var module = await moduleTask.Value;            
+            await module.InvokeVoidAsync("ensureDevExtremeAsync");
+            await ResourcesLoaded.InvokeAsync();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (moduleTask.IsValueCreated)
+        {
+            var module = await moduleTask.Value;
+            await module.DisposeAsync();
+        }
+    }
+}

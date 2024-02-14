@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "HotelBooking.Desktop", ".", "{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/HotelBooking.Desktop"
+		Debug.AspNetCompiler.PhysicalPath = ".\"
+		Debug.AspNetCompiler.TargetPath = "..\PrecompiledWeb\HotelBooking.Desktop\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/HotelBooking.Desktop"
+		Release.AspNetCompiler.PhysicalPath = ".\"
+		Release.AspNetCompiler.TargetPath = "..\PrecompiledWeb\HotelBooking.Desktop\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "57705"
+		SlnRelativePath = ".\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+		Debug|Any CPU = Debug|Any CPU
+		Release|.NET = Release|.NET
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}.Debug|.NET.ActiveCfg = Debug|.NET
+		{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}.Debug|.NET.Build.0 = Debug|.NET
+		{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}.Debug|Any CPU.ActiveCfg = Debug|.NET
+		{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}.Release|.NET.ActiveCfg = Debug|.NET
+		{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}.Release|.NET.Build.0 = Debug|.NET
+		{DB2A2CB3-DF59-4C6C-A764-08457B19C25F}.Release|Any CPU.ActiveCfg = Debug|.NET
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2011D1A-0607-4CA3-9C57-A934D11E834A}
+	EndGlobalSection
+EndGlobal

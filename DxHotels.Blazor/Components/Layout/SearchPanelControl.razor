@@ -1,0 +1,103 @@
+﻿@using Microsoft.EntityFrameworkCore
+@inject HotelBookingContext dataContext
+
+<div id="Search" class="search-panel p-3">
+    <EditForm Model="@searchModel" Context="editContext">
+        <DataAnnotationsValidator>
+
+        </DataAnnotationsValidator>
+        <DxFormLayout CaptionPosition="CaptionPosition.Vertical" Context="layoutContext">
+            <DxFormLayoutItem Caption=" " ColSpanMd="12">
+                <h3>HOTEL SEARCH</h3>
+            </DxFormLayoutItem>
+            <DxFormLayoutItem Caption="Location" ColSpanMd="12" CssClass="item" CaptionCssClass="item-caption">
+                <DxComboBox Data="@locations"
+                            @bind-Value="@searchModel.Location"
+                            FilteringMode="DataGridFilteringMode.Contains"                            
+                            CssClass="cw-480"
+                            DisplayFormat="{1} {2}" EditFormat="{1} {2}">
+                    <Columns>
+                        <DxListEditorColumn FieldName="@nameof(LocationModel.Id)"
+                                            Caption="Id" />
+                        <DxListEditorColumn FieldName="@nameof(LocationModel.City)"
+                                            Caption="City" />
+                        <DxListEditorColumn FieldName="@nameof(LocationModel.Country)"
+                                            Caption="Country" />
+                        <DxListEditorColumn FieldName="@nameof(LocationModel.HotelCount)"
+                                            Caption="# of Hotels" />
+                    </Columns>
+                </DxComboBox>
+            </DxFormLayoutItem>
+            <DxFormLayoutItem Caption="Check in" ColSpanMd="6" CssClass="item" CaptionCssClass="item-caption">
+                <DxDateEdit @bind-Date="@searchModel.Checkin" ></DxDateEdit>
+            </DxFormLayoutItem>
+            <DxFormLayoutItem Caption="Check out" ColSpanMd="6" CssClass="item" CaptionCssClass="item-caption">
+                <DxDateEdit @bind-Date="@searchModel.Checkout"></DxDateEdit>
+            </DxFormLayoutItem>
+
+            <DxFormLayoutItem Caption="Rooms" ColSpanMd="6" CssClass="item" CaptionCssClass="item-caption">
+                <DxComboBox @bind-Value="@searchModel.Rooms" Data="@roomData"></DxComboBox>
+            </DxFormLayoutItem>
+
+            <DxFormLayoutItem Caption="Adults" ColSpanMd="3" CssClass="item" CaptionCssClass="item-caption">
+                <DxSpinEdit @bind-Value="@searchModel.Adults" MinValue="1" MaxValue="5"></DxSpinEdit>
+            </DxFormLayoutItem>
+            <DxFormLayoutItem Caption="Children" ColSpanMd="3" CssClass="item" CaptionCssClass="item-caption">
+                <DxSpinEdit @bind-Value="@searchModel.Adults" MinValue="0" MaxValue="4"></DxSpinEdit>
+            </DxFormLayoutItem>
+
+            <DxFormLayoutItem Caption=" " ColSpanMd="12" CssClass="item" CaptionCssClass="item-caption">
+                <button type="button" class="search-button w-100" Width="100%" @onclick="@ValidateAndPerformSearch">
+                    SEARCH
+                </button>
+            </DxFormLayoutItem>
+        </DxFormLayout>
+    </EditForm>
+</div>
+
+
+@code {
+    public class LocationModel {
+        public int Id { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string Area_Name { get; set; }
+        public int HotelCount { get; set; }
+    }
+
+    public class SearchModel
+    {
+        public LocationModel Location { get; set; } = default!;
+        public DateTime Checkin { get; set; } = DateTime.Today.AddDays(5);
+        public DateTime Checkout { get; set; } = DateTime.Now.AddDays(8);
+        public int Rooms { get; set; } = 1;
+        public int Adults { get; set; } = 1;
+        public int Children { get; set; } = 0;
+    }
+
+    static readonly int[] roomData = new int[] { 1, 2, 3, 4, 5 };
+    
+    protected SearchModel searchModel = new SearchModel();
+
+    protected IEnumerable<LocationModel> locations { get; set; } = default!;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var data = dataContext.Metro_Areas.Include(m => m.Cities).ThenInclude(c => c.Hotels)
+            .Select(ma => new LocationModel {
+                Id= ma.ID, 
+                Country=  ma.Country, 
+                City = ma.City, 
+                Area_Name = ma.Area_Name, 
+                HotelCount = ma.Hotels_Count 
+            });
+        locations = data.OrderBy(a => a.Area_Name);
+    }
+
+    void ValidateAndPerformSearch()
+    {
+        
+    }
+}
