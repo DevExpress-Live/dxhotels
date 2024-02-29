@@ -1,4 +1,4 @@
-﻿using DxHotels.Controls;
+﻿
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DxHotels.Controls
+namespace DXHotels.Controls
 {
     public partial class DevExtremeRangeSlider : DevExtremeBaseWidget
     {
