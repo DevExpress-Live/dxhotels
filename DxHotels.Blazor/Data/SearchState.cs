@@ -1,26 +1,18 @@
-﻿
-using DxHotels.Blazor.Data.Models;
+﻿using DxHotels.Blazor.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 
-namespace DxHotels.Blazor.Data;
-public class SearchState
-{
+public class SearchState {
     bool validState = true;
 
-    public SearchState(string page, NameValueCollection parameters, HotelBookingContext context)
-    {
+    public SearchState(string page, NameValueCollection parameters, HotelBookingContext context) {
         Page = page;
-        DataContext = context;
-        if (!string.IsNullOrEmpty(parameters["location"]))
-        {
-            try
-            {
+        //DataContext = context;
+        if(!string.IsNullOrEmpty(parameters["location"])) {
+            try {
                 CheckInDate = DateTime.ParseExact(parameters["checkin"], "M-d-yyyy", CultureInfo.InvariantCulture);
                 CheckOutDate = DateTime.ParseExact(parameters["checkout"], "M-d-yyyy", CultureInfo.InvariantCulture);
                 RoomsCount = Convert.ToInt32(parameters["rooms"]);
@@ -28,19 +20,15 @@ public class SearchState
                 ChildrenCount = Convert.ToInt32(parameters["children"]);
                 var id = Convert.ToInt32(parameters["location"]);
                 Metro_Area = context.Metro_Areas.First(c => c.ID == id);
-                if (!string.IsNullOrEmpty(parameters["hotelID"]))
-                {
+                if(!string.IsNullOrEmpty(parameters["hotelID"])) {
                     HotelId = Convert.ToInt32(parameters["hotelID"]);
                     Hotel = context.Hotels.First(h => h.ID == HotelId);
                 }
-                if (!string.IsNullOrEmpty(parameters["roomID"]))
-                {
+                if(!string.IsNullOrEmpty(parameters["roomID"])) {
                     id = Convert.ToInt32(parameters["roomID"]);
                     Room = context.Rooms.First(r => r.ID == id);
                 }
-            }
-            catch
-            {
+            } catch {
                 ValidState = false;
             }
         }
@@ -54,7 +42,7 @@ public class SearchState
 
     public string Page { get; set; }
 
-    public HotelBookingContext DataContext { get; set; }
+    //public HotelBookingDataContext DataContext { get; set; }
     public DateTime CheckInDate { get; set; }
     public DateTime CheckOutDate { get; set; }
     public int RoomsCount { get; set; }
@@ -64,25 +52,22 @@ public class SearchState
     public int HotelId { get; set; }
 
     public Hotel Hotel { get; set; }
-    public Metro_Area Metro_Area { get; set; }
+    public Metro_Areas Metro_Area { get; set; }
     public Room Room { get; set; }
-    public bool ValidState
-    {
+    public bool ValidState {
         get { return validState; }
         set { validState = value; }
     }
 
     public int NightsCount { get { return (CheckOutDate - CheckInDate).Days; } }
 
-    public string StartFilterText
-    {
-        get
-        {
+    public string StartFilterText {
+        get {
             var paramsList = new List<string>();
             paramsList.Add(string.Format("{0} {1}", NightsCount, NightsCount > 1 ? "nights" : "night"));
             paramsList.Add(string.Format("{0} {1}", RoomsCount, RoomsCount > 1 ? "rooms" : "room"));
             paramsList.Add(string.Format("{0} {1}", AdultsCount, AdultsCount > 1 ? "adults" : "adult"));
-            if (ChildrenCount > 0)
+            if(ChildrenCount > 0)
                 paramsList.Add(string.Format("{0} {1}", ChildrenCount, ChildrenCount > 1 ? "child" : "children"));
             return string.Format("{0} - {1}<br/>{2}", CheckInDate.ToString("MMM d"), CheckOutDate.ToString("MMM d, yyyy"), string.Join(", ", paramsList));
         }
@@ -92,11 +77,9 @@ public class SearchState
     public string FilterMaxPrice { get; set; }
     public string FilterCustomerRating { get; set; }
     public string FilterOurRating { get; set; }
-    public int[] FilterOurRatingArray
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(FilterOurRating))
+    public int[] FilterOurRatingArray {
+        get {
+            if(string.IsNullOrEmpty(FilterOurRating))
                 return new int[] { 1, 2, 3, 4, 5 };
             else
                 return FilterOurRating.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
@@ -104,8 +87,7 @@ public class SearchState
     }
     public string FilterLocationRating { get; set; }
 
-    public NameValueCollection GetQueryParameters(bool addFilterParameters)
-    {
+    public NameValueCollection GetQueryParameters(bool addFilterParameters) {
         var parameters = new NameValueCollection();
         parameters["location"] = Metro_Area.ID.ToString();
         parameters["checkin"] = CheckInDate.ToString("M-d-yyyy");
@@ -113,32 +95,29 @@ public class SearchState
         parameters["rooms"] = RoomsCount.ToString();
         parameters["adults"] = AdultsCount.ToString();
         parameters["children"] = ChildrenCount.ToString();
-        if (Hotel != null)
+        if(Hotel != null)
             parameters["hotelID"] = Hotel.ID.ToString();
-        if (Room != null)
+        if(Room != null)
             parameters["roomID"] = Room.ID.ToString();
-        if (addFilterParameters)
-        {
-            if (!string.IsNullOrEmpty(FilterCustomerRating))
+        if(addFilterParameters) {
+            if(!string.IsNullOrEmpty(FilterCustomerRating))
                 parameters["custrating"] = FilterCustomerRating;
-            if (!string.IsNullOrEmpty(FilterLocationRating))
+            if(!string.IsNullOrEmpty(FilterLocationRating))
                 parameters["locrating"] = FilterLocationRating;
-            if (!string.IsNullOrEmpty(FilterMaxPrice))
+            if(!string.IsNullOrEmpty(FilterMaxPrice))
                 parameters["maxprice"] = FilterMaxPrice;
-            if (!string.IsNullOrEmpty(FilterMinPrice))
+            if(!string.IsNullOrEmpty(FilterMinPrice))
                 parameters["minprice"] = FilterMinPrice;
-            if (!string.IsNullOrEmpty(FilterOurRating))
+            if(!string.IsNullOrEmpty(FilterOurRating))
                 parameters["ourrating"] = FilterOurRating;
         }
         return parameters;
     }
 
-    public static SearchState CreateSearchState(NameValueCollection parameters, string pageName)
-    {
+    public static SearchState CreateSearchState(NameValueCollection parameters, string pageName, HotelBookingContext dataContext) {
         var isValidParams = false;
 
-        switch (pageName)
-        {
+        switch(pageName) {
             case "Booking":
                 isValidParams = ValidateBookingPageParameters(parameters);
                 break;
@@ -150,10 +129,9 @@ public class SearchState
                 break;
         }
 
-        return isValidParams ? new SearchState(pageName, parameters, new HotelBookingContext()) : null;
+        return isValidParams ? new SearchState(pageName, parameters, dataContext) : null;
     }
-    protected static bool ValidateResultsPageParameters(NameValueCollection parameters)
-    {
+    protected static bool ValidateResultsPageParameters(NameValueCollection parameters) {
         return
             !string.IsNullOrEmpty(parameters["rooms"]) &&
             !string.IsNullOrEmpty(parameters["adults"]) &&
@@ -162,14 +140,12 @@ public class SearchState
             !string.IsNullOrEmpty(parameters["checkout"]) &&
             !string.IsNullOrEmpty(parameters["location"]);
     }
-    protected static bool ValidateDetailsPageParameters(NameValueCollection parameters)
-    {
+    protected static bool ValidateDetailsPageParameters(NameValueCollection parameters) {
         return
             ValidateResultsPageParameters(parameters) &&
             !string.IsNullOrEmpty(parameters["hotelID"]);
     }
-    protected static bool ValidateBookingPageParameters(NameValueCollection parameters)
-    {
+    protected static bool ValidateBookingPageParameters(NameValueCollection parameters) {
         return
             ValidateDetailsPageParameters(parameters) &&
             !string.IsNullOrEmpty(parameters["roomID"]);

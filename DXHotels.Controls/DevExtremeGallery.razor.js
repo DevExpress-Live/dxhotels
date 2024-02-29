@@ -1,7 +1,7 @@
 ﻿
 export async function initializeGallery(dotNetHelper, element, datasource, options) {
-   
-    var o = options || {};    
+    //debugger;
+    var o = options || {};
     o.dataSource = datasource;
     if (Array.isArray(datasource) && datasource.length > 0 && datasource[0].hasOwnProperty('template')) {
         o.itemTemplate = (item) => item.template;
@@ -39,7 +39,7 @@ export async function setGalleryOptions(gallery, options) {
     gallery.option(options);
 };
 
-export async function setGalleryOption(gallery, optionName, optionValue) {    
+export async function setGalleryOption(gallery, optionName, optionValue) {
     gallery.option(optionName, optionValue);
 };
 

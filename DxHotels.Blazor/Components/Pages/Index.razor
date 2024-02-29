@@ -1,29 +1,29 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
-@using System.Text.Json.Serialization
+<PageTitle>DXHotels Demo | Blazor Controls by DevExpress</PageTitle>
 
-<PageTitle>DXHotels Demo | ASP.NET Controls by DevExpress</PageTitle>
-
-<BaseCtrl>
-    <BodyTemplate>
-        <div class="index-banner">
-            <div class="searchPanelContainer">
-                <SearchPanelControl></SearchPanelControl>
-                <div class="text">
-                    <h1>Hotel Booking</h1>
-                    <h2>powered by DevExpress ASP.NET Controls</h2>
-                </div>
+<PageControl>
+    <BodyContent>
+        
+    <div class="index-banner">
+        <div class="searchPanelContainer">
+            <SearchPanelControl></SearchPanelControl>
+            
+            <div class="text">
+                <h1>Hotel Booking</h1>
+                <h2>powered by DevExpress Blazor Controls</h2>
             </div>
         </div>
-        <div class="clear"></div>
-        <div class="widgets">
+    </div>
+    <div class="clear"></div>
+    <div class="widgets">
             <div class="content-column" style="padding-top: 30px; margin-bottom: -20px;">
 
                 <div class="widget" style="float: left; padding-right: 10px;">
                     <div style="border: 1px solid gray; background-color: white; padding: 5px 5px 20px 5px;">
-                        <div class="closeImageContainer">
-                            <img src="/Content/Images/offer-close-ico.png" class="closeImage" />
-                        </div>
+                         <div class="closeImageContainer">
+                            @* <img src="/Content/Images/offer-close-ico.png" class="closeImage" /> *@
+                        </div> 
                         <div class="imageContainer">
                             <img src="/Content/Images/wid2.png" class="image" />
                         </div>
@@ -31,9 +31,9 @@
                 </div>
                 <div class="widget" style="float: left; padding-right: 10px;">
                     <div style="border: 1px solid gray; background-color: white; padding: 5px 5px 20px 5px;">
-                        <div class="closeImageContainer">
-                            <img src="/Content/Images/offer-close-ico.png" class="closeImage" />
-                        </div>
+                         <div class="closeImageContainer">
+                            @* <img src="/Content/Images/offer-close-ico.png" class="closeImage" /> *@
+                        </div> 
                         <div class="imageContainer">
                             <img src="/Content/Images/wid1.png" class="image" />
                         </div>
@@ -41,9 +41,10 @@
                 </div>
                 <div class="widget" style="float: left;">
                     <div style="border: 1px solid gray; background-color: white; padding: 5px 5px 20px 5px;">
-                        <div class="closeImageContainer">
-                            <img src="/Content/Images/offer-close-ico.png" class="closeImage" />
+                         <div class="closeImageContainer">
+                            @* <img src="/Content/Images/offer-close-ico.png" class="closeImage" /> *@
                         </div>
+ 
                         <div class="imageContainer">
                             <img src="/Content/Images/wid3.png" class="image" />
                         </div>
@@ -52,36 +53,48 @@
 
 
             </div>
+    </div>
+    <div class="index-offers content-column">
+        <div class="title">
+            SPECIAL OFFERS
         </div>
-        <div class="index-offers content-column">
-            <div class="title">
-                SPECIAL OFFERS <DxCheckBox @bind-Checked="@SlideShowDelay" ValueChecked="2000" ValueUnchecked="0">Animation</DxCheckBox>
-            </div>
-            <div class="imageSlider">                                                
-                <DevExtremeGallery @ref="g" TItem="GalleryItem" DataSource="@galleryItems" Width="100%" Height="505px" Loop="true" 
-                                SlideshowDelay="@SlideShowDelay" ShowNavButtons="true" ItemClick="@Click">
-                </DevExtremeGallery>
-            </div>
+        <div class="imageSlider">
+            <DevExtremeGallery TItem="GalleryItem" DataSource="@galleryItems" Width="100%" Height="505px" Loop="true"
+                        SlideshowDelay="@SlideShowDelay" ShowNavButtons="true" ItemClick="@Click">
+            </DevExtremeGallery>
         </div>
-        @* ASPxPopupControl ID="pcWidgetInfo"  *@
+    </div>
 
-    </BodyTemplate>
-    <FooterTemplate>
+    </BodyContent>
+    <FooterContent>
         ASP.NET Images Gallery<br />
         ASP.NET Data Editors Library<br />
         ASP.NET Popup Controls
-    </FooterTemplate>
-</BaseCtrl>
-@code {
-    DevExtremeGallery<GalleryItem> g = default!;
+    </FooterContent>
+</PageControl>
 
-    public int SlideShowDelay { get; set; } = 0;
+@code{
+    readonly static CultureInfo culture = new CultureInfo("en-US");
+    public int SlideShowDelay { get; set; } = 2500;
+
+    public int SliderValue { get; set; } = 20;
+
+    public int MinValue { get; set; } = 100;
+    public int MaxValue { get; set; } = 999;
+    public int StartValue { get; set; } = 100;
+    public int EndValue { get; set; } = 999;
 
     protected async Task Click(DXGalleryDataEventArgs<GalleryItem> args)
     {
         await JSRuntime.InvokeVoidAsync("alert", $"You clicked on {args.ItemData?.HotelName} in {args.ItemData?.City}");
     }
 
+    public Index()
+    {
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+    }
     public List<GalleryItem> galleryItems = new List<GalleryItem>(new[] {
         new GalleryItem() { Image = "/Content/Images/Cities/Athens.jpg", HotelName = "Greece Majesty", City = "Athens, Greece", Price = 214 },
         new GalleryItem() { Image = "/Content/Images/Cities/Barcelona.jpg", HotelName = "Hotel Barcelona Universal", City = "Barcelona, Spain", Price = 136 },
@@ -104,7 +117,10 @@
         [JsonPropertyName("hotelName")] public string HotelName { get; set; } = default!;
         [JsonPropertyName("city")] public string City { get; set; } = default!;
         [JsonPropertyName("price")] public decimal Price { get; set; } = 0;
-        [JsonPropertyName("template")] public string Template { 
-            get => $"<div style='background-image: url({Image}); background-repeat: no-repeat; height: 100%;'><div style='float: right; opacity: 0.8; width: 250px; padding: 10px; margin-top: 25px; background-color: black; color: white;'><div class='hotel'>{HotelName}</div><div class='city'>{City}</div><div class='price'>{string.Format("{0:c}", Price)}</div></div></div>"; }
+        [JsonPropertyName("template")]
+        public string Template
+        {
+            get => $"<div style='background-image: url({Image}); background-repeat: no-repeat; height: 100%;'><div style='float: right; opacity: 0.8; width: 250px; padding: 10px; margin-top: 25px; background-color: black; color: white;'><div class='hotel'>{HotelName}</div><div class='city'>{City}</div><div class='price'>{Price.ToString("c")}</div></div></div>";
+        }
     }
 }

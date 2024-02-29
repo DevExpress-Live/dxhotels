@@ -1,0 +1,126 @@
+﻿@inherits BasePage
+@page "/results"
+@using Microsoft.EntityFrameworkCore
+
+<PageControl>
+    <BodyContent>
+        <div class="content-column results">
+        <div class="results-header" style="height: 130px;">
+            <div class="content-column">
+                <div class="map-image" style="width: unset; height: unset;">
+                    <img border="0" src="@State.Metro_Area.Map_ImageUrl" />                
+                </div>
+                <h3>@State.Metro_Area.Area_Name</h3>
+                <br />
+                <span class="start-filter">@(new MarkupString(State.StartFilterText))</span>
+            </div>
+        </div>
+
+        <div class="results-content">
+            <DxGrid Data="@hotels" PageSize="3" CustomizeElement="OnCustomizeElement">
+                <Columns>
+                    <DxGridDataColumn FieldName="@nameof(Hotel.Hotel_Name)">
+
+                    </DxGridDataColumn>
+                </Columns>
+                <DataColumnCellDisplayTemplate>
+                    @{
+                        var hotel = context.DataItem as Hotel;
+                    }
+                    <div class="item" style="border-bottom: none;">
+                        <div class="hotel-image">
+                            <a href="@GetHotelDetailsUrl(hotel.ID)">
+                                <img src="@hotel.PrimaryPicture.Url" style="width: 140px; height: 140px;" width="140px" height="140px" />
+                            </a>
+                        </div>
+
+                        <div class="hotel-common">
+                            <a href="@GetHotelDetailsUrl(hotel.ID)" class="hotel-title" style="color: #ff8800;">
+                                @hotel.Hotel_Name
+                            </a>
+                            <div class="hotel-address">
+                                @hotel.Address<br />
+                                @hotel.DetailsCity
+                            </div>
+                            <div class="hotel-stats">
+                                <div class="stat">
+                                    TYPE:
+                                    <span style="font-size: 14px">@hotel.Hotel_Class</span>
+                                </div>
+                                <div class="stat">
+                                    LOCATION:
+                                    <span style="font-size: 14px">@hotel.Location_Rating</span>
+                                </div>
+                                <div class="stat">
+                                    RATING:
+                                    <span style="font-size: 14px">@hotel.Our_Rating</span>
+                                    <img border="0" src="/Content/Images/star.png" style="margin-top: -5px" />
+                                </div>
+                            </div>
+                            @* <dx:ASPxRatingControl ID="HotelCustomerRatingControl" runat="server" Value='<%# Eval("Customer_Rating") %>' ReadOnly="True" CssClass="rating-control"></dx:ASPxRatingControl> *@
+                        </div>
+                        <div class="hotel-right-block">
+                            <div class="price">@string.Format("{0:C}", hotel.StartPrice)</div>
+                            per night<br />
+                            <DxButton RenderStyle="ButtonRenderStyle.Light" SizeMode="SizeMode.Large" Text="Book It" />
+                        </div>
+                        <div class="clear"></div>
+                        <div class="hotel-description">
+                            @hotel.Description
+                        </div>
+                    </div>
+                </DataColumnCellDisplayTemplate>
+            </DxGrid>
+        </div>
+        <div class="results-filter">
+        </div>
+        <div style="clear: both"></div>
+    
+        </div>
+
+    </BodyContent>
+    <FooterContent>
+        ASP.NET Data View Control<br />
+        ASP.NET Data Editors Library<br />
+        ASP.NET Rating Control
+    </FooterContent>
+</PageControl>
+
+@code {
+    protected IEnumerable<Hotel> hotels { get; set; } = default!;
+    protected override string Name => "Results";
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        hotels = FindHotels().ToList();
+
+    }
+    IEnumerable<Hotel> FindHotels() {
+        return DataContext.Hotels.Include(h => h.City).Include(h => h.Rooms).Include(h => h.Pictures).ToList().Where(h => CheckHotelFilters(h));
+    }
+
+    bool CheckHotelFilters(Hotel hotel) {
+        return hotel.City.Metro_Area_ID == State.Metro_Area.ID; // &&
+                                                                //NightlyRateTrackBar.PositionStart <= hotel.EndPrice &&
+                                                                //hotel.StartPrice <= (NightlyRateTrackBar.PositionEnd + 1) &&
+                                                                //hotel.Customer_Rating >= CustomerRatingTrackBar.Position &&
+                                                                //State.FilterOurRatingArray.Contains((int)Math.Floor(hotel.Our_Rating.Value)) &&
+                                                                //DataProvider.LocationRatings.IndexOf(hotel.Location_Rating) >= DataProvider.LocationRatings.IndexOf(LocationRatingComboBox.Value.ToString());
+    }
+
+
+    protected string GetHotelDetailsUrl(object hotelID) {
+        var parameters = State.GetQueryParameters(false);
+        parameters["hotelID"] = hotelID.ToString();
+        return string.Format("/details?{0}", DataProvider.GetQueryString(parameters));
+    }
+
+    void OnCustomizeElement(GridCustomizeElementEventArgs e)
+    {
+        if (e.ElementType == GridElementType.HeaderRow)
+        {
+            e.CssClass = "d-none";
+        }
+    }
+}

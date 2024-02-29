@@ -1,23 +1,22 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
-namespace DXHotels.Controls
+namespace DxHotels.Controls
 {
     public partial class DevExtremeGallery<TItem> : DevExtremeBaseWidget
     {
-        public DevExtremeGallery(): base()
+        public DevExtremeGallery() : base()
         {
 
         }
 
-        protected override Dictionary<string, object> options => new Dictionary<string, object>
+        protected override Dictionary<string, object> options { get; set; } = new Dictionary<string, object>
         {
             {"accessKey", null!},
             {"animationDuration", 400},
@@ -77,164 +76,69 @@ namespace DXHotels.Controls
         [Parameter] public IEnumerable<TItem> DataSource { get; set; } = default!;
 
         [Parameter]
-        public int AnimationDuration
-        {
-            get => (int)options["animationDuration"];
-            set => ChangeProperty("animationDuration", value);
-        }
+        public int AnimationDuration { get => (int)options["animationDuration"]; set => ChangeProperty("animationDuration", value); }
         [Parameter]
-        public bool AnimationEnabled
-        {
-            get => (bool)options["animationEnabled"];
-            set => ChangeProperty("animationEnabled", value);
-        }
+        public bool AnimationEnabled { get => (bool)options["animationEnabled"]; set => ChangeProperty("animationEnabled", value); }
 
         //dataSource:Edit,
         [Parameter]
-        public bool Disabled
-        {
-            get => (bool)options["disabled"];
-            set => ChangeProperty("disabled", value);
-        }
+        public bool Disabled { get => (bool)options["disabled"]; set => ChangeProperty("disabled", value); }
         //elementAttr:{},
         [Parameter]
-        public bool FocusStateEnabled
-        {
-            get => (bool)options["focusStateEnabled"];
-            set => ChangeProperty("focusStateEnabled", value);
-        }
+        public bool FocusStateEnabled { get => (bool)options["focusStateEnabled"]; set => ChangeProperty("focusStateEnabled", value); }
         [Parameter]
-        public string Height
-        {
-            get => (string)options["height"];
-            set => ChangeProperty("height", value);
-        }
+        public string Height { get => (string)options["height"]; set => ChangeProperty("height", value); }
         [Parameter]
-        public string Hint
-        {
-            get => (string)options["hint"];
-            set => ChangeProperty("hint", value);
-        }
+        public string Hint { get => (string)options["hint"]; set => ChangeProperty("hint", value); }
         [Parameter]
-        public bool HoverStateEnabled
-        {
-            get => (bool)options["hoverStateEnabled"];
-            set => ChangeProperty("hoverStateEnabled", value);
-        }
+        public bool HoverStateEnabled { get => (bool)options["hoverStateEnabled"]; set => ChangeProperty("hoverStateEnabled", value); }
         [Parameter]
-        public bool IndicatorEnabled
-        {
-            get => (bool)options["indicatorEnabled"];
-            set => ChangeProperty("indicatorEnabled", value);
-        }
+        public bool IndicatorEnabled { get => (bool)options["indicatorEnabled"]; set => ChangeProperty("indicatorEnabled", value); }
         [Parameter]
-        public string InitialItemWidth
-        {
-            get => (string)options["initialItemWidth"];
-            set => ChangeProperty("initialItemWidth", value);
-        }
+        public string InitialItemWidth { get => (string)options["initialItemWidth"]; set => ChangeProperty("initialItemWidth", value); }
 
-        
+
 
         [Parameter]
-        public int ItemHoldTimeout
-        {
-            get => (int)options["itemHoldTimeout"];
-            set => ChangeProperty("itemHoldTimeout", value);
-        }
+        public int ItemHoldTimeout { get => (int)options["itemHoldTimeout"]; set => ChangeProperty("itemHoldTimeout", value); }
         //itemComponent:null,
         //itemRender:null,
         //items:Edit,
         //itemTemplate:"item",
         //selectedItem:null,
         [Parameter]
-        public bool Loop
-        {
-            get => (bool)options["loop"];
-            set => ChangeProperty("loop", value);
-        }
+        public bool Loop { get => (bool)options["loop"]; set => ChangeProperty("loop", value); }
         [Parameter]
-        public string NoDataText
-        {
-            get => (string)options["noDataText"];
-            set => ChangeProperty("noDataText", value);
-        }
+        public string NoDataText { get => (string)options["noDataText"]; set => ChangeProperty("noDataText", value); }
 
         [Parameter]
-        public bool RtlEnabled
-        {
-            get => (bool)options["rtlEnabled"];
-            set => ChangeProperty("rtlEnabled", value);
-        }
+        public bool RtlEnabled { get => (bool)options["rtlEnabled"]; set => ChangeProperty("rtlEnabled", value); }
         [Parameter]
-        public int SelectedIndex
-        {
-            get => (int)options["selectedIndex"];
-            set => ChangeProperty("selectedIndex", value);
-        }
+        public int SelectedIndex { get => (int)options["selectedIndex"]; set => ChangeProperty("selectedIndex", value); }
         [Parameter]
         public EventCallback<int> SelectedIndexChanged { get; set; }
-        
+
         [Parameter]
-        public bool ShowIndicator
-        {
-            get => (bool)options["showIndicator"];
-            set => ChangeProperty("showIndicator", value);
-        }
+        public bool ShowIndicator { get => (bool)options["showIndicator"]; set => ChangeProperty("showIndicator", value); }
         [Parameter]
-        public bool ShowNavButtons
-        {
-            get => (bool)options["showNavButtons"];
-            set => ChangeProperty("showNavButtons", value);
-        }
+        public bool ShowNavButtons { get => (bool)options["showNavButtons"]; set => ChangeProperty("showNavButtons", value); }
         [Parameter]
-        public int SlideshowDelay
-        {
-            get => (int)options["slideshowDelay"];
-            set => ChangeProperty("slideshowDelay", value);
-        }
+        public int SlideshowDelay { get => (int)options["slideshowDelay"]; set => ChangeProperty("slideshowDelay", value); }
         [Parameter]
-        public bool StretchImages
-        {
-            get => (bool)options["stretchImages"];
-            set => ChangeProperty("stretchImages", value);
-        }
+        public bool StretchImages { get => (bool)options["stretchImages"]; set => ChangeProperty("stretchImages", value); }
         [Parameter]
-        public bool SwipeEnabled
-        {
-            get => (bool)options["swipeEnabled"];
-            set => ChangeProperty("swipeEnabled", value);
-        }
+        public bool SwipeEnabled { get => (bool)options["swipeEnabled"]; set => ChangeProperty("swipeEnabled", value); }
         [Parameter]
-        public int TabIndex
-        {
-            get => (int)options["tabIndex"];
-            set => ChangeProperty("tabIndex", value);
-        }
+        public int TabIndex { get => (int)options["tabIndex"]; set => ChangeProperty("tabIndex", value); }
         [Parameter]
-        public bool Visible
-        {
-            get => (bool)options["visible"];
-            set => ChangeProperty("visible", value);
-        }
+        public bool Visible { get => (bool)options["visible"]; set => ChangeProperty("visible", value); }
         [Parameter]
-        public string Width
-        {
-            get => (string)options["width"];
-            set => ChangeProperty("width", value);
-        }
+        public string Width { get => (string)options["width"]; set => ChangeProperty("width", value); }
         [Parameter]
-        public bool WrapAround
-        {
-            get => (bool)options["wrapAround"];
-            set => ChangeProperty("wrapAround", value);
-        }
+        public bool WrapAround { get => (bool)options["wrapAround"]; set => ChangeProperty("wrapAround", value); }
 
 #pragma warning restore BL0007
 
-        [Parameter] public EventCallback<DXWidgetEventArgs> ContentReady { get; set; }
-        [Parameter] public EventCallback<DXWidgetEventArgs> Disposing { get; set; }
-        [Parameter] public EventCallback<DXWidgetEventArgs> Initialized { get; set; }
         [Parameter] public EventCallback<DXGalleryDataEventArgs<TItem>> ItemClick { get; set; }
         [Parameter] public EventCallback<DXGalleryDataEventArgs<TItem>> ItemContextMenu { get; set; }
         [Parameter] public EventCallback<DXGalleryDataEventArgs<TItem>> ItemHold { get; set; }
@@ -242,39 +146,34 @@ namespace DXHotels.Controls
         [Parameter] public EventCallback<DXGalleryOptionChangedEventArgs<TItem>> OptionChanged { get; set; }
         [Parameter] public EventCallback<DXGallerySelectionChangedEventArgs<TItem>> SelectionChanged { get; set; }
 
-        [JSInvokable] public async Task JSContentReady() =>         
-            await ContentReady.InvokeAsync(new DXWidgetEventArgs(DXClientWidget));
-
-        [JSInvokable] public async Task JSDisposing() => 
-            await Disposing.InvokeAsync(new DXWidgetEventArgs(DXClientWidget));
-
-        [JSInvokable] public async void JSInitialized() => 
-            await Initialized.InvokeAsync(new DXWidgetEventArgs(DXClientWidget));
-
-        [JSInvokable] public async Task JSItemClick(int itemIndex, JsonElement itemData) => 
+        [JSInvokable]
+        public async Task JSItemClick(int itemIndex, JsonElement itemData) =>
             await ItemClick.InvokeAsync(new DXGalleryDataEventArgs<TItem>(DXClientWidget, itemIndex, itemData));
 
-        [JSInvokable] public async Task JSItemContextMenu(int itemIndex, JsonElement itemData) => 
+        [JSInvokable]
+        public async Task JSItemContextMenu(int itemIndex, JsonElement itemData) =>
             await ItemContextMenu.InvokeAsync(new DXGalleryDataEventArgs<TItem>(DXClientWidget, itemIndex, itemData));
 
-        [JSInvokable] public async Task JSItemHold(int itemIndex, JsonElement itemData) => 
+        [JSInvokable]
+        public async Task JSItemHold(int itemIndex, JsonElement itemData) =>
             await ItemHold.InvokeAsync(new DXGalleryDataEventArgs<TItem>(DXClientWidget, itemIndex, itemData));
 
-        [JSInvokable] public async Task JSItemRendered(int itemIndex, JsonElement itemData) => 
+        [JSInvokable]
+        public async Task JSItemRendered(int itemIndex, JsonElement itemData) =>
             await ItemRendered.InvokeAsync(new DXGalleryDataEventArgs<TItem>(DXClientWidget, itemIndex, itemData));
 
         [JSInvokable]
         public async Task JSOptionChanged(object value, object previousValue, string name, string fullName) =>
             await OptionChanged.InvokeAsync(new DXGalleryOptionChangedEventArgs<TItem>(DXClientWidget, value, previousValue, name, fullName));
 
-        [JSInvokable]
-        public async Task JSSelectionChanged(JsonElement[] removedItems, JsonElement[] addedItems)
-        {
+        //[JSInvokable]
+        //public Task JSSelectionChanged(JsonElement[] removedItems, JsonElement[] addedItems)
+        //{
 
-            var r = removedItems;
-            var a = addedItems;
-            //await SelectionChanged.InvokeAsync(new DXGallerySelectionChangedEventArgs<TItem>(DXClientWidget, removedItems, addedItems));
-        }
+        //    var r = removedItems;
+        //    var a = addedItems;
+        //    //await SelectionChanged.InvokeAsync(new DXGallerySelectionChangedEventArgs<TItem>(DXClientWidget, removedItems, addedItems));
+        //}
 
     }
 

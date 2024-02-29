@@ -29,9 +29,9 @@ public partial class Room
 
     public virtual ICollection<Picture> Pictures { get; set; } = new List<Picture>();
 
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    public virtual ICollection<Reservations> Reservations { get; set; } = new List<Reservations>();
 
     public virtual ICollection<Room_Feature> Room_Features { get; set; } = new List<Room_Feature>();
 
-    public virtual Room_Type? Room_TypeNavigation { get; set; }
+    public virtual Room_Types? Room_TypeNavigation { get; set; }
 }

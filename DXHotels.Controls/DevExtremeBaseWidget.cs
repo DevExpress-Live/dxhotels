@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DXHotels.Controls
+namespace DxHotels.Controls
 {
     public class DXWidgetEventArgs
     {
@@ -27,16 +26,33 @@ namespace DXHotels.Controls
 
         protected ElementReference DXWidget { get; set; } = default!;
         protected IJSObjectReference DXClientWidget { get; set; } = default!;
-        protected abstract Dictionary<string, object> options { get; }
+        protected abstract Dictionary<string, object> options { get; set; }
         protected abstract string ModuleName { get; }
         protected abstract Task<IJSObjectReference> InitializeDXControl();
         protected virtual string JSSetOptionName => "setOption";
         protected virtual string JSSetOptionsName => "setOptions";
 
+        [Parameter] public virtual EventCallback<DXWidgetEventArgs> ContentReady { get; set; }
+        [Parameter] public virtual EventCallback<DXWidgetEventArgs> Disposing { get; set; }
+        [Parameter] public virtual EventCallback<DXWidgetEventArgs> Initialized { get; set; }
+
+        [JSInvokable]
+        public async virtual Task JSContentReady() =>
+            await ContentReady.InvokeAsync(new DXWidgetEventArgs(DXClientWidget));
+
+        [JSInvokable]
+        public async virtual Task JSDisposing() =>
+            await Disposing.InvokeAsync(new DXWidgetEventArgs(DXClientWidget));
+
+        [JSInvokable]
+        public async virtual void JSInitialized() =>
+            await Initialized.InvokeAsync(new DXWidgetEventArgs(DXClientWidget));
+
+
         public DevExtremeBaseWidget()
         {
             moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>("import", ModuleName).AsTask());
-            dotNetObjectReference = DotNetObjectReference.Create(this);            
+            dotNetObjectReference = DotNetObjectReference.Create(this);
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -67,11 +83,12 @@ namespace DXHotels.Controls
             }
         }
 
-        protected virtual void ChangeProperty<T>(string name, T value)
+        protected virtual void ChangeProperty<T>(string name, T value, bool skipSet = false)
         {
             if (EqualityComparer<T>.Default.Equals((T)options[name], value)) return;
             options[name] = value!;
-            InvokeAsync(async () => await SetWidgetOption(name, value));
+            if (!skipSet)
+                InvokeAsync(async () => await SetWidgetOption(name, value));
         }
 
         public async virtual ValueTask DisposeAsync()

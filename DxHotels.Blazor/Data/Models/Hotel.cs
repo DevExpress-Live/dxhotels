@@ -33,15 +33,15 @@ public partial class Hotel
 
     public string? Metro_Area { get; set; }
 
-    public virtual City? Cities { get; set; }
+    public virtual City? City { get; set; }
 
-    public virtual ICollection<Hotel_Feature> Hotel_Features { get; set; } = new List<Hotel_Feature>();
+    public virtual ICollection<Hotel_Features> Hotel_Features { get; set; } = new List<Hotel_Features>();
 
-    public virtual ICollection<Hotel_Image> Hotel_Images { get; set; } = new List<Hotel_Image>();
+    public virtual ICollection<Hotel_Images> Hotel_Images { get; set; } = new List<Hotel_Images>();
 
     public virtual ICollection<Picture> Pictures { get; set; } = new List<Picture>();
 
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }
