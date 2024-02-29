@@ -21,5 +21,5 @@ public partial class City
 
     public virtual ICollection<Hotel> Hotels { get; set; } = new List<Hotel>();
 
-    public virtual Metro_Area? Metro_Area { get; set; }
+    public virtual Metro_Areas? Metro_Area { get; set; }
 }

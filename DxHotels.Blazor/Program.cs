@@ -1,7 +1,8 @@
 using DxHotels.Blazor.Data;
 using DxHotels.Blazor.Components;
-using Microsoft.EntityFrameworkCore;
 using DxHotels.Blazor.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using DxHotels.Blazor;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +17,12 @@ builder.Services.AddDevExpressBlazor(options => {
 });
 
 const string connectionName = "HotelBookingConnectionString";
-var connectionString = builder.Configuration.GetConnectionString(connectionName) ?? throw new InvalidOperationException($"Connection string '{connectionName}' not found.");
-builder.Services.AddDbContext<HotelBookingContext>(options =>
+var connectionString = builder.Configuration.GetConnectionString(connectionName) ??
+        throw new InvalidOperationException($"Connection {connectionName} is missing in config");
+builder.Services.AddDbContext<HotelBookingContext>(options => 
     options.UseSqlServer(connectionString));
 
+builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
 

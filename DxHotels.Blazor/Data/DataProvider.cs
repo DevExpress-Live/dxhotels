@@ -8,16 +8,11 @@ using System.Linq;
 using System.Web;
 using System.Collections.Specialized;
 
-namespace DxHotels.Blazor.Data;
 public class DataProvider {
-
     const int MaxDaysCountForReport = 15;
 
-    public static Dictionary<int, decimal> CustomRatings
-    {
-        get
-        {
-            //TODO
+    public static Dictionary<int, decimal> CustomRatings {
+        get {
             return new Dictionary<int, decimal>();
             //if(HttpContext.Current.Session["CustomRatings"] == null)
             //    HttpContext.Current.Session["CustomRatings"] = new Dictionary<int, decimal>();
@@ -53,71 +48,72 @@ public class DataProvider {
             "", "AAA", "AA", "A", "BBB"
         };
     }
-    public static InvoiceReport CreateReport(SearchState state) {
-        var report = new InvoiceReport();
-        report.HotelNameLabel1.Text = state.Hotel.Hotel_Name;
-        report.HotelNameLabel2.Text = state.Hotel.Hotel_Name;
+    //public static InvoiceReport CreateReport(SearchState state) {
+    //    var report = new InvoiceReport();
+    //    report.HotelNameLabel1.Text = state.Hotel.Hotel_Name;
+    //    report.HotelNameLabel2.Text = state.Hotel.Hotel_Name;
 
-        report.RatingPictureBox.ImageUrl = string.Format("~/Content/Report/Rating{0}.png", state.Hotel.RoundRating);
-        report.RatingPictureBox.Location = new Point(GetTextWidth(state.Hotel.Hotel_Name, report.HotelNameLabel1.Font), report.RatingPictureBox.Location.Y);
+    //    report.RatingPictureBox.ImageUrl = string.Format("~/Content/Report/Rating{0}.png", state.Hotel.RoundRating);
+    //    report.RatingPictureBox.Location = new Point(GetTextWidth(state.Hotel.Hotel_Name, report.HotelNameLabel1.Font), report.RatingPictureBox.Location.Y);
 
-        report.HotelAddressLine1Label.Text = state.Hotel.Address + " " + state.Hotel.Cities.City_Name;
-        if(!string.IsNullOrEmpty(state.Hotel.Cities.State_Province))
-            report.HotelAddressLine1Label.Text += ", " + state.Hotel.Cities.State_Province;
-        report.HotelAddressLine1Label.Text += ", " + state.Hotel.Postal_Code + ",";
-        report.HotelAddressLine2Label.Text = state.Hotel.Cities.Country;
+    //    report.HotelAddressLine1Label.Text = state.Hotel.Address + " " + state.Hotel.Cities.City_Name;
+    //    if(!string.IsNullOrEmpty(state.Hotel.Cities.State_Province))
+    //        report.HotelAddressLine1Label.Text += ", " + state.Hotel.Cities.State_Province;
+    //    report.HotelAddressLine1Label.Text += ", " + state.Hotel.Postal_Code + ",";
+    //    report.HotelAddressLine2Label.Text = state.Hotel.Cities.Country;
 
-        report.HotelAddressLabel.Text = state.Hotel.Address + " " + state.Hotel.DetailsCity;
-        report.CheckInLabel.Text = state.CheckInDate.ToString("MMMM dd, yyyy");
-        report.CheckOutLabel.Text = state.CheckOutDate.ToString("MMMM dd, yyyy");
+    //    report.HotelAddressLabel.Text = state.Hotel.Address + " " + state.Hotel.DetailsCity;
+    //    report.CheckInLabel.Text = state.CheckInDate.ToString("MMMM dd, yyyy");
+    //    report.CheckOutLabel.Text = state.CheckOutDate.ToString("MMMM dd, yyyy");
 
-        report.PriceTable.Rows.Clear();
-        for(int i = 0; i < state.NightsCount && i < MaxDaysCountForReport; i++) {
-            var date = state.CheckInDate + TimeSpan.FromDays(i);
-            report.PriceTable.Rows.Add(CreateReportRow(date.ToString("MMMM dd, yyyy"), state.Room.Nighly_Rate.Value.ToString("C")));
-        }
-        if(state.NightsCount > MaxDaysCountForReport) {
-            var remainDays = state.NightsCount - MaxDaysCountForReport;
-            report.PriceTable.Rows.Add(CreateReportRow(
-                string.Format("{0} days more", remainDays), 
-                (state.Room.Nighly_Rate.Value * remainDays).ToString("C"))
-            );
-        }
+    //    report.PriceTable.Rows.Clear();
+    //    for(int i = 0; i < state.NightsCount && i < MaxDaysCountForReport; i++) {
+    //        var date = state.CheckInDate + TimeSpan.FromDays(i);
+    //        report.PriceTable.Rows.Add(CreateReportRow(date.ToString("MMMM dd, yyyy"), state.Room.Nighly_Rate.Value.ToString("C")));
+    //    }
+    //    if(state.NightsCount > MaxDaysCountForReport) {
+    //        var remainDays = state.NightsCount - MaxDaysCountForReport;
+    //        report.PriceTable.Rows.Add(CreateReportRow(
+    //            string.Format("{0} days more", remainDays), 
+    //            (state.Room.Nighly_Rate.Value * remainDays).ToString("C"))
+    //        );
+    //    }
 
-        report.TotalPriceLabel.Text = string.Format("{0:C}", state.Room.Nighly_Rate.Value * state.NightsCount);
+    //    report.TotalPriceLabel.Text = string.Format("{0:C}", state.Room.Nighly_Rate.Value * state.NightsCount);
 
-        report.HotelDescriptionLabel.Text = state.Hotel.Description;
+    //    report.HotelDescriptionLabel.Text = state.Hotel.Description;
 
-        report.HotelSmallImagePictureBox.ImageUrl = state.Hotel.PrimaryPicture.Url;
-        report.HotelLargeImagePictureBox.ImageUrl = state.Hotel.SecondaryPicture.Url;
+    //    report.HotelSmallImagePictureBox.ImageUrl = state.Hotel.PrimaryPicture.Url;
+    //    report.HotelLargeImagePictureBox.ImageUrl = state.Hotel.SecondaryPicture.Url;
 
-        return report;
-    }
+    //    return report;
+    //}
 
-    public static string GetQueryString(NameValueCollection parameters) {
+    public static string GetQueryString(NameValueCollection parameters)
+    {
         var array = (from key in parameters.AllKeys
                      select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(parameters[key]))).ToArray();
         return string.Join("&", array);
     }
 
-    static int GetTextWidth(string text, Font font) {
-        var gr = Graphics.FromHwnd(IntPtr.Zero);
-        gr.PageUnit = GraphicsUnit.Inch;
-        SizeF size = gr.MeasureString(text, font);
-        return Convert.ToInt32(size.Width * 100);
-    }
+    //static int GetTextWidth(string text, Font font) {
+    //    var gr = Graphics.FromHwnd(IntPtr.Zero);
+    //    gr.PageUnit = GraphicsUnit.Inch;
+    //    SizeF size = gr.MeasureString(text, font);
+    //    return Convert.ToInt32(size.Width * 100);
+    //}
 
-    static XRTableRow CreateReportRow(string text, string price) {
-        var row = new DevExpress.XtraReports.UI.XRTableRow();
-        var cell1 = new XRTableCell();
-        var cell2 = new XRTableCell();
-        cell1.Text = text;
-        cell2.Text = price;
-        cell2.TextAlignment = TextAlignment.MiddleRight;
-        row.Cells.Add(cell1);
-        row.Cells.Add(cell2);
-        return row;
-    }
+    //static XRTableRow CreateReportRow(string text, string price) {
+    //    var row = new DevExpress.XtraReports.UI.XRTableRow();
+    //    var cell1 = new XRTableCell();
+    //    var cell2 = new XRTableCell();
+    //    cell1.Text = text;
+    //    cell2.Text = price;
+    //    cell2.TextAlignment = TextAlignment.MiddleRight;
+    //    row.Cells.Add(cell1);
+    //    row.Cells.Add(cell2);
+    //    return row;
+    //}
 
     public static List<string> GetDefaultHotelLocations() {
         return new List<string>() {

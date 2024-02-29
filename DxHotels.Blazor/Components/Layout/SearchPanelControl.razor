@@ -1,7 +1,11 @@
-﻿@using Microsoft.EntityFrameworkCore
+﻿@using DxHotels.Blazor.Data.Models
+@using Microsoft.EntityFrameworkCore
+@using System.Collections.Specialized
 @inject HotelBookingContext dataContext
+@inject NavigationManager NavigationManager
 
 <div id="Search" class="search-panel p-3">
+    
     <EditForm Model="@searchModel" Context="editContext">
         <DataAnnotationsValidator>
 
@@ -13,7 +17,7 @@
             <DxFormLayoutItem Caption="Location" ColSpanMd="12" CssClass="item" CaptionCssClass="item-caption">
                 <DxComboBox Data="@locations"
                             @bind-Value="@searchModel.Location"
-                            FilteringMode="DataGridFilteringMode.Contains"                            
+                            FilteringMode="DataGridFilteringMode.Contains"
                             CssClass="cw-480"
                             DisplayFormat="{1} {2}" EditFormat="{1} {2}">
                     <Columns>
@@ -29,7 +33,7 @@
                 </DxComboBox>
             </DxFormLayoutItem>
             <DxFormLayoutItem Caption="Check in" ColSpanMd="6" CssClass="item" CaptionCssClass="item-caption">
-                <DxDateEdit @bind-Date="@searchModel.Checkin" ></DxDateEdit>
+                <DxDateEdit @bind-Date="@searchModel.Checkin"></DxDateEdit>
             </DxFormLayoutItem>
             <DxFormLayoutItem Caption="Check out" ColSpanMd="6" CssClass="item" CaptionCssClass="item-caption">
                 <DxDateEdit @bind-Date="@searchModel.Checkout"></DxDateEdit>
@@ -53,15 +57,16 @@
             </DxFormLayoutItem>
         </DxFormLayout>
     </EditForm>
+
 </div>
 
-
 @code {
-    public class LocationModel {
+    public class LocationModel
+    {
         public int Id { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string Area_Name { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; } 
+        public string? Area_Name { get; set; }
         public int HotelCount { get; set; }
     }
 
@@ -76,7 +81,7 @@
     }
 
     static readonly int[] roomData = new int[] { 1, 2, 3, 4, 5 };
-    
+
     protected SearchModel searchModel = new SearchModel();
 
     protected IEnumerable<LocationModel> locations { get; set; } = default!;
@@ -85,19 +90,34 @@
     {
         await base.OnInitializedAsync();
 
-        var data = dataContext.Metro_Areas.Include(m => m.Cities).ThenInclude(c => c.Hotels)
-            .Select(ma => new LocationModel {
-                Id= ma.ID, 
-                Country=  ma.Country, 
-                City = ma.City, 
-                Area_Name = ma.Area_Name, 
-                HotelCount = ma.Hotels_Count 
-            });
+        var data = dataContext.Metro_Areas.Include(m=>m.Cities).ThenInclude(c=>c.Hotels)
+                    .Select(ma => new LocationModel
+                        {
+                            Id = ma.ID,
+                            Country = ma.Country,
+                            City = ma.City,
+                            Area_Name = ma.Area_Name,
+                            HotelCount = ma.Hotels_Count
+                        });
         locations = data.OrderBy(a => a.Area_Name);
     }
 
-    void ValidateAndPerformSearch()
-    {
+
+    void ValidateAndPerformSearch() {
+        NameValueCollection parameters = new NameValueCollection() {
+            { "location", searchModel.Location.Id.ToString() },
+            { "checkin", searchModel.Checkin.Date.ToString("M-d-yyyy") },
+            { "checkout", searchModel.Checkout.Date.ToString("M-d-yyyy") },
+            { "rooms", searchModel.Rooms.ToString() },
+            { "adults", searchModel.Adults.ToString() },
+            { "children", searchModel.Children.ToString() },
+        };
+        var redirectUrl = "results?" + DataProvider.GetQueryString(parameters);
         
+        NavigationManager.NavigateTo(redirectUrl);
+        // if (Page.IsCallback)
+        //     DevExpress.Web.ASPxWebControl.RedirectOnCallback(redirectUrl);
+        // else
+        //     Response.Redirect(redirectUrl);
     }
 }
