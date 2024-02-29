@@ -36,12 +36,14 @@
                     <DxFormLayoutItem Caption=" " ColSpanMd="12">
                         <DxTextBox NullText="Password" @bind-Text="@loginModel.Password" Password="true"></DxTextBox>
                     </DxFormLayoutItem>
+                    @*                  
                     <DxFormLayoutItem Caption=" " ColSpanMd="12">
                         <div style="padding-bottom: 10px;">
                             <Captcha @bind-CaptchaWord="@loginModel.CaptchaCheck" CharNumber="@loginModel.CaptchaChars" />
                         </div>
                         <DxTextBox NullText="Enter code" @bind-Text="@loginModel.Captcha"></DxTextBox>
                     </DxFormLayoutItem>
+                    *@
                     <DxFormLayoutItem Caption=" " ColSpanMd="12">
                         <ValidationSummary></ValidationSummary>
                     </DxFormLayoutItem>

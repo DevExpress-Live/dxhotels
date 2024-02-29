@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DxHotels.Controls
+namespace DXHotels.Controls
 {
     public partial class DevExtremeGallery<TItem> : DevExtremeBaseWidget
     {
