@@ -90,7 +90,7 @@
     {
         await base.OnInitializedAsync();
 
-        var data = dataContext.Metro_Areas.Include(m=>m.Cities).ThenInclude(c=>c.Hotels)
+        var data = dataContext.Metro_Areas.Include(m => m.Cities).ThenInclude(c => c.Hotels)
                     .Select(ma => new LocationModel
                         {
                             Id = ma.ID,
@@ -113,9 +113,15 @@
             { "children", searchModel.Children.ToString() },
         };
         var redirectUrl = "results?" + DataProvider.GetQueryString(parameters);
-        
-        NavigationManager.NavigateTo(redirectUrl);
-        // if (Page.IsCallback)
+
+        try
+        {
+            NavigationManager.NavigateTo(redirectUrl);
+        }
+        catch(Exception ex){
+            Console.WriteLine(ex.Message);
+        }
+    // if (Page.IsCallback)
         //     DevExpress.Web.ASPxWebControl.RedirectOnCallback(redirectUrl);
         // else
         //     Response.Redirect(redirectUrl);

@@ -47,7 +47,7 @@ namespace DXHotels.Controls
             { "width", "" }
         };
 
-        protected override string ModuleName => "./_content/DXHotels.Controls/DevExtremeSlider.razor.js";
+        protected override string ModuleName { get => "./_content/DXHotels.Controls/DevExtremeSlider.razor.js"; }
         protected override string JSSetOptionName => "setSliderOption";
         protected override string JSSetOptionsName => "setSliderOptions";
 
