@@ -19,27 +19,25 @@ public partial class HotelBookingContext : DbContext
 
     public virtual DbSet<Features_List> Features_Lists { get; set; }
 
-    public virtual DbSet<Guests> Guests { get; set; }
+    public virtual DbSet<Guest> Guests { get; set; }
 
-    public virtual DbSet<Hotel_Features> Hotel_Features { get; set; }
+    public virtual DbSet<Hotel_Feature> Hotel_Features { get; set; }
 
-    public virtual DbSet<Hotel_Images> Hotel_Images { get; set; }
+    public virtual DbSet<Hotel_Image> Hotel_Images { get; set; }
 
     public virtual DbSet<Hotel> Hotels { get; set; }
-        
-    public virtual DbSet<Metro_Areas> Metro_Areas { get; set; }
+
+    public virtual DbSet<Metro_Area> Metro_Areas { get; set; }
 
     public virtual DbSet<Picture> Pictures { get; set; }
 
-    public virtual DbSet<Reservations> Reservations { get; set; }
+    public virtual DbSet<Reservation> Reservations { get; set; }
 
-    public virtual DbSet<Reviews> Reviews { get; set; }
-
-    public virtual DbSet<Room> Rooms { get; set; }
+    public virtual DbSet<Review> Reviews { get; set; }
 
     public virtual DbSet<Room_Feature> Room_Features { get; set; }
-
-    public virtual DbSet<Room_Types> Room_Types { get; set; }
+    public virtual DbSet<Room_Type> Room_Types { get; set; }
+    public virtual DbSet<Room> Rooms { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,7 +56,7 @@ public partial class HotelBookingContext : DbContext
             entity.ToTable("Features_List");
         });
 
-        modelBuilder.Entity<Guests>(entity =>
+        modelBuilder.Entity<Guest>(entity =>
         {
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.City).HasMaxLength(255);
@@ -89,7 +87,7 @@ public partial class HotelBookingContext : DbContext
                 .HasConstraintName("FK_Hotels_Cities");
         });
 
-        modelBuilder.Entity<Hotel_Features>(entity =>
+        modelBuilder.Entity<Hotel_Feature>(entity =>
         {
             entity.Property(e => e.Description).HasMaxLength(255);
 
@@ -98,7 +96,7 @@ public partial class HotelBookingContext : DbContext
                 .HasConstraintName("FK_Hotel_Features_Hotels");
         });
 
-        modelBuilder.Entity<Hotel_Images>(entity =>
+        modelBuilder.Entity<Hotel_Image>(entity =>
         {
             entity.Property(e => e.Image_Id).HasMaxLength(100);
 
@@ -120,7 +118,7 @@ public partial class HotelBookingContext : DbContext
                 .HasConstraintName("FK_Pictures_Rooms");
         });
 
-        modelBuilder.Entity<Reservations>(entity =>
+        modelBuilder.Entity<Reservation>(entity =>
         {
             entity.Property(e => e.Amount_Due).HasColumnType("money");
             entity.Property(e => e.Amount_Paid).HasColumnType("money");
@@ -132,7 +130,7 @@ public partial class HotelBookingContext : DbContext
                 .HasConstraintName("FK_Reservations_Rooms");
         });
 
-        modelBuilder.Entity<Reviews>(entity =>
+        modelBuilder.Entity<Review>(entity =>
         {
             entity.Property(e => e.Posted_On).HasColumnType("datetime");
             entity.Property(e => e.Reviewer_Name).HasMaxLength(255);
@@ -167,7 +165,7 @@ public partial class HotelBookingContext : DbContext
                 .HasConstraintName("FK_Room_Features_Rooms");
         });
 
-        modelBuilder.Entity<Room_Types>(entity =>
+        modelBuilder.Entity<Room_Type>(entity =>
         {
             entity.Property(e => e.Type_Name).HasMaxLength(255);
         });

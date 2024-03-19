@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DXHotels.Controls;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace DXHotels.Controls
         };
 
 
-        protected override string ModuleName => "./_content/DXHotels.Controls/DevExtremeGallery.razor.js";
+        protected override string ModuleName { get => "./_content/DXHotels.Controls/DevExtremeGallery.razor.js"; }
         protected override string JSSetOptionName => "setGalleryOption";
         protected override string JSSetOptionsName => "setGalleryOptions";
 
@@ -217,5 +218,5 @@ namespace DXHotels.Controls
         public T[]? AddedValues { get; }
     }
 
-
+   
 }

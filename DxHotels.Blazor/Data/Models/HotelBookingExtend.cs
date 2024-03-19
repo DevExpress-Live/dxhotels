@@ -91,7 +91,7 @@ namespace DxHotels.Blazor.Data.Models
         }
     }
 
-    public partial class Metro_Areas {
+    public partial class Metro_Area {
         public string Map_ImageUrl {
             get {
                 return string.Format("/Content/Maps/{0}", Map_Image);

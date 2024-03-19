@@ -52,7 +52,7 @@ public class SearchState {
     public int HotelId { get; set; }
 
     public Hotel Hotel { get; set; }
-    public Metro_Areas Metro_Area { get; set; }
+    public Metro_Area Metro_Area { get; set; }
     public Room Room { get; set; }
     public bool ValidState {
         get { return validState; }

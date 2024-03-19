@@ -10,7 +10,7 @@
 
     protected sealed override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
-            moduleRef = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/DxHotels.Controls/DevExtremeLoader.razor.js");
+            moduleRef = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/DXHotels.Controls/DevExtremeLoader.razor.js");
             await moduleRef.InvokeVoidAsync("ensureDevExtremeAsync");
             await ResourcesLoaded.InvokeAsync();
         }

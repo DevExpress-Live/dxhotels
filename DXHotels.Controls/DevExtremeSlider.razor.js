@@ -10,7 +10,7 @@
         showMode: 'always',
         position: 'bottom'
     };
-    //o.valueChangeMode = 'onHandleRelease';
+    o.valueChangeMode = 'onHandleRelease';
     //Event initialization
     o.onContentReady = async (e) => await dotNetHelper.invokeMethodAsync('JSContentReady');
     o.onDisposing = async (e) => await dotNetHelper.invokeMethodAsync('JSDisposing');

@@ -7,13 +7,35 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Collections.Specialized;
+using DxHotels.Blazor.Data.Models;
+using DevExpress.Data.Browsing;
+using Microsoft.EntityFrameworkCore;
+
+public class HotelDataService
+{
+    List<Hotel> hotelList = new List<Hotel>();
+    public HotelDataService(HotelBookingContext db)
+    {
+        HotelData = db.Hotels
+                    .Include(h => h.City)
+                    .Include(h => h.Rooms)
+                    .Include(h => h.Pictures).ToList();
+    }
+
+    public List<Hotel> HotelData { get; }
+}
 
 public class DataProvider {
     const int MaxDaysCountForReport = 15;
 
-    public static Dictionary<int, decimal> CustomRatings {
-        get {
-            return new Dictionary<int, decimal>();
+    static Dictionary<int, decimal> ratings = new Dictionary<int, decimal>();
+    public static Dictionary<int, decimal> CustomRatings
+    {
+        get
+        {
+            return ratings;
+            //ratings.GetOrAdd
+            //return new Dictionary<int, decimal>();
             //if(HttpContext.Current.Session["CustomRatings"] == null)
             //    HttpContext.Current.Session["CustomRatings"] = new Dictionary<int, decimal>();
             //return (Dictionary<int, decimal>)HttpContext.Current.Session["CustomRatings"];

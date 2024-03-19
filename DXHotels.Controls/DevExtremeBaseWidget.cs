@@ -27,7 +27,7 @@ namespace DXHotels.Controls
         protected ElementReference DXWidget { get; set; } = default!;
         protected IJSObjectReference DXClientWidget { get; set; } = default!;
         protected abstract Dictionary<string, object> options { get; set; }
-        protected abstract string ModuleName { get; }
+        protected abstract string ModuleName { get; }        
         protected abstract Task<IJSObjectReference> InitializeDXControl();
         protected virtual string JSSetOptionName => "setOption";
         protected virtual string JSSetOptionsName => "setOptions";

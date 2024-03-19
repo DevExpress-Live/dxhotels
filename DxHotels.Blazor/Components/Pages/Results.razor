@@ -4,7 +4,6 @@
 
 <PageControl>
     <BodyContent>
-        <div class="content-column results">
         <div class="results-header" style="height: 130px;">
             <div class="content-column">
                 <div class="map-image" style="width: unset; height: unset;">
@@ -15,15 +14,24 @@
                 <span class="start-filter">@(new MarkupString(State.StartFilterText))</span>
             </div>
         </div>
+        <div class="content-column results">
+            <div class="results-summary">
+                <span style="font-size: 36px; color: #f78119">RESULTS </span>
+                <span style="font-size: 36px; color: #999999">@String.Format("{0} HOTELS", Hotels.Count())</span>
+                <DxTagBox Data="@Tokens"
+                            TData="string"
+                            TValue="string" @bind-Tags="@Tokens" style="font-size: 16px; width: 100%" CssClass="token-box">
+                </DxTagBox>
+            </div>
+        
+            <div class="results-content">
+                <DxGrid Data="@Hotels" PageSize="3" CustomizeElement="OnCustomizeElement">
+                    <Columns>
+                        <DxGridDataColumn FieldName="@nameof(Hotel.Hotel_Name)">
 
-        <div class="results-content">
-            <DxGrid Data="@hotels" PageSize="3" CustomizeElement="OnCustomizeElement">
-                <Columns>
-                    <DxGridDataColumn FieldName="@nameof(Hotel.Hotel_Name)">
-
-                    </DxGridDataColumn>
-                </Columns>
-                <DataColumnCellDisplayTemplate>
+                        </DxGridDataColumn>
+                    </Columns>
+                    <DataColumnCellDisplayTemplate>
                     @{
                         var hotel = context.DataItem as Hotel;
                     }
@@ -69,15 +77,56 @@
                             @hotel.Description
                         </div>
                     </div>
-                </DataColumnCellDisplayTemplate>
-            </DxGrid>
-        </div>
-        <div class="results-filter">
-        </div>
-        <div style="clear: both"></div>
-    
-        </div>
+                    </DataColumnCellDisplayTemplate>
+                </DxGrid>
+            </div>
+            <div class="results-filter">
+                <DxFormLayout CssClass="w-100" CaptionPosition="CaptionPosition.Vertical">
+                    <DxFormLayoutItem Caption="Search by City:" ColSpanSm="12">
+                            <DxComboBox Data="@MetroAreas" Value="@MetroArea" TextFieldName="@nameof(Metro_Area.Area_Name)" FilteringMode="DataGridFilteringMode.Contains"
+                                ValueChanged="@((Metro_Area area) => SelectedAreaChanged(area))">
+                            </DxComboBox>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption="Nightly Rate:" ColSpanSm="12">
+                            <div class="d-flex p-1" style="width: 100%; border: 1px solid silver; background-color: white">
+                                <div class="trackbar-label-l">@NightlyRateStart</div>
+                            <div class="flex-grow-1">
+                                <DevExtremeRangeSlider Min="@NightlyRateMin" Max="@NightlyRateMax" @bind-Start="@NightlyRateStart" @bind-End="@NightlyRateEnd" Width="100%" />
+                            </div> 
+                            <div class="trackbar-label-r">@NightlyRateEnd</div>
+                        </div>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption="Customer Rating:" ColSpanSm="12">
+                        <div class="d-flex p-1" style="width: 100%; border: 1px solid silver; background-color: white">
+                            <div class="flex-grow-1">
+                                <DevExtremeSlider Min="@CustomerRatingMin" Max="@CustomerRatingMax" @bind-Value="@CustomerRating" Width="100%"  />
+                            </div>
+                            <div class="trackbar-label-r">@CustomerRating</div>
+                        </div>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption="Our Rating:" ColSpanSm="12">
+                        <DxListBox Data="@RatingData" @bind-SelectedValues="@SelectedRatings" Width="100%" 
+                                SelectionMode="ListBoxSelectionMode.Multiple" ShowCheckboxes="true" TData="RatingItem" TValue="RatingItem">
+                            <ItemDisplayTemplate Context="itemCtx">
+                                <div>
+                                    <img border="0" src="@itemCtx.DataItem.ImageUrl" />
+                                </div>
+                            </ItemDisplayTemplate>
+                        </DxListBox>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem Caption="Location:" ColSpanSm="12">
+                        <DxComboBox Data="@LocationData" @bind-Value="@State.FilterLocationRating">
 
+                        </DxComboBox>
+                    </DxFormLayoutItem>
+                    <DxFormLayoutItem ColSpanSm="12">
+                        <DxButton RenderStyle="ButtonRenderStyle.Light" Text="Apply" CssClass="w-100" Click="@ApplyFilterButton_Click" />
+                    </DxFormLayoutItem>
+                </DxFormLayout>
+
+            </div>
+            <div style="clear: both"></div>
+        </div>
     </BodyContent>
     <FooterContent>
         ASP.NET Data View Control<br />
@@ -87,40 +136,195 @@
 </PageControl>
 
 @code {
-    protected IEnumerable<Hotel> hotels { get; set; } = default!;
+    private List<string> tokens = new List<string>();
+    protected IEnumerable<string> Tokens { get => tokens; set => tokens = new List<string>(value); }
+    protected List<string> TokenData { get; set; } = new List<string>();
+
+    protected Metro_Area MetroArea { get; set; } = default!;
+    protected IEnumerable<Metro_Area> MetroAreas { get; set; } = new List<Metro_Area>();
+    protected IEnumerable<Hotel> Hotels { get; set; } = new List<Hotel>()!;
+    protected IEnumerable<string> LocationData { get; set; } = DataProvider.LocationRatings;
+
+    protected string SelectedLocation { get; set; } = default!;
+
+    protected IEnumerable<RatingItem> SelectedRatings { get; set; } = new List<RatingItem>();
+    protected IEnumerable<RatingItem> RatingData = new List<RatingItem>
+    {
+        new RatingItem { ImageUrl = "/Content/Images/star1.png", Value = 1 },
+        new RatingItem { ImageUrl = "/Content/Images/star2.png", Value = 2 },
+        new RatingItem { ImageUrl = "/Content/Images/star3.png", Value = 3 },
+        new RatingItem { ImageUrl = "/Content/Images/star4.png", Value = 4 },
+        new RatingItem { ImageUrl = "/Content/Images/star5.png", Value = 5 }
+    };
+
+    protected int NightlyRateMin { get; set; }
+    protected int NightlyRateMax { get; set; }
+    protected int NightlyRateStart { get; set; } = 10;
+    protected int NightlyRateEnd { get; set; } = 500;
+
+    protected int CustomerRating { get; set; }
+
+    protected int CustomerRatingMin { get; set; } = 1;
+    protected int CustomerRatingMax { get; set; } = 1;
+
     protected override string Name => "Results";
+
 
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        hotels = FindHotels().ToList();
+        MetroAreas = await DataContext.Metro_Areas.Include(m=>m.Cities).ThenInclude(c=>c.Hotels).ThenInclude(h=>h.Rooms).ToListAsync();
+
+        MetroArea = State.Metro_Area;
+
+        NightlyRateMax = Convert.ToInt32(Math.Floor(State.Metro_Area.MaxRoomPrice));
+        NightlyRateMin = Convert.ToInt32(Math.Floor(State.Metro_Area.MinRoomPrice));
+
+        NightlyRateStart = Convert.ToInt32(GetDecimalValue(State.FilterMinPrice, NightlyRateMin, NightlyRateMax, NightlyRateMin));
+        NightlyRateEnd = Convert.ToInt32(GetDecimalValue(State.FilterMaxPrice, NightlyRateMin, NightlyRateMax, NightlyRateMax));
+
+        CustomerRating = Convert.ToInt32(GetDecimalValue(State.FilterCustomerRating, CustomerRatingMin, CustomerRatingMax, CustomerRatingMin));
+
+        SelectedLocation = State.FilterLocationRating ?? "BBB";
+
+        foreach(int i in State.FilterOurRatingArray){
+           var item = RatingData.FirstOrDefault(r=>r.Value == i); 
+           if (item != null)
+                SelectedRatings.Append(item);
+        }
+        EnsureTokensList(false);
+
+        Hotels = FindHotels().ToList();
 
     }
-    IEnumerable<Hotel> FindHotels() {
-        return DataContext.Hotels.Include(h => h.City).Include(h => h.Rooms).Include(h => h.Pictures).ToList().Where(h => CheckHotelFilters(h));
+
+    protected async Task UpdateFilters()
+    {
+        
     }
 
-    bool CheckHotelFilters(Hotel hotel) {
-        return hotel.City.Metro_Area_ID == State.Metro_Area.ID; // &&
-                                                                //NightlyRateTrackBar.PositionStart <= hotel.EndPrice &&
-                                                                //hotel.StartPrice <= (NightlyRateTrackBar.PositionEnd + 1) &&
-                                                                //hotel.Customer_Rating >= CustomerRatingTrackBar.Position &&
-                                                                //State.FilterOurRatingArray.Contains((int)Math.Floor(hotel.Our_Rating.Value)) &&
-                                                                //DataProvider.LocationRatings.IndexOf(hotel.Location_Rating) >= DataProvider.LocationRatings.IndexOf(LocationRatingComboBox.Value.ToString());
+    protected async override Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
     }
 
+    void EnsureTokensList(bool updateFilter)
+    {
+        if (!updateFilter)
+            tokens.Clear();
 
-    protected string GetHotelDetailsUrl(object hotelID) {
+        EnsureToken(State.Metro_Area.Area_Name, updateFilter, () => NavigationManager.NavigateTo("/", true));
+
+        if (NightlyRateStart != NightlyRateMin || NightlyRateEnd != NightlyRateMax)
+        {
+            EnsureToken(string.Format("${0}-${1}", NightlyRateStart, NightlyRateEnd), updateFilter, () =>
+            {
+                State.FilterMaxPrice = null;
+                State.FilterMinPrice = null;
+            });
+        }
+        if (CustomerRating > 1)
+            EnsureToken(string.Format("{0}+ Customer Rating", CustomerRating), updateFilter, () => State.FilterCustomerRating = null!);
+        if (State.FilterOurRatingArray.Length < 5)
+            EnsureToken(string.Format("{0} Stars", string.Join(", ", State.FilterOurRatingArray)), updateFilter, () => State.FilterOurRating = null!);
+        if (!string.IsNullOrEmpty(State.FilterLocationRating) && State.FilterLocationRating != "BBB")
+            EnsureToken(string.Format("{0}+ Location Rating", State.FilterLocationRating), updateFilter, () => State.FilterLocationRating = null!);
+
+        if (updateFilter)
+            NavigationManager.NavigateTo("/results.aspx?" + DataProvider.GetQueryString(State.GetQueryParameters(true)), true);
+    }
+    void EnsureToken(string text, bool updateFilter, Action changeFilterAction)
+    {
+        if (updateFilter && !TokenData.Contains(text))
+            changeFilterAction();
+        else if (!updateFilter)
+            TokenData.Add(text);
+    }
+
+    IEnumerable<Hotel> FindHotels()
+    {
+        var results = DataContext.Hotels
+            .Include(h=>h.Pictures)
+            .Include(h => h.Rooms)
+            .Include(h => h.City).ThenInclude(c => c.Metro_Area)
+            .ToList();
+        return results.Where(h => CheckHotelFilters(h));
+    }
+    bool CheckHotelFilters(Hotel hotel)
+    {
+        return hotel.City!.Metro_Area_ID == State.Metro_Area.ID &&
+               NightlyRateStart <= hotel.EndPrice &&
+               hotel.StartPrice <= (NightlyRateEnd + 1)  /* &&
+               hotel.Customer_Rating >= CustomerRating &&
+               State.FilterOurRatingArray.Contains((int)Math.Floor(hotel.Our_Rating!.Value)) &&
+               DataProvider.LocationRatings.IndexOf(hotel.Location_Rating!) >= DataProvider.LocationRatings.IndexOf(SelectedLocation)*/;
+    }
+
+    protected string GetHotelDetailsUrl(object hotelID)
+    {
         var parameters = State.GetQueryParameters(false);
         parameters["hotelID"] = hotelID.ToString();
         return string.Format("/details?{0}", DataProvider.GetQueryString(parameters));
     }
 
-    void OnCustomizeElement(GridCustomizeElementEventArgs e)
+    protected void ApplyFilterButton_Click(MouseEventArgs args)
     {
-        if (e.ElementType == GridElementType.HeaderRow)
+        var parameters = State.GetQueryParameters(false);
+        parameters["location"] = MetroArea.ID.ToString();
+        if (NightlyRateStart > NightlyRateMin)
+            parameters["minprice"] = NightlyRateStart.ToString();
+        if (NightlyRateEnd < NightlyRateMax)
+            parameters["maxprice"] = NightlyRateEnd.ToString();
+        if (CustomerRating > 0)
+            parameters["custrating"] = CustomerRating.ToString();
+        if (!string.IsNullOrEmpty(SelectedLocation))
+            parameters["locrating"] = SelectedLocation.ToString();
+        if (RatingData.Count() > 0)
+            parameters["ourrating"] = string.Join(",", RatingData.Select(r=>r.Value));
+        
+        NavigationManager.NavigateTo("/results?" + DataProvider.GetQueryString(parameters), true);
+    }
+    protected decimal GetDecimalValue(string textValue, decimal minValue, decimal maxValue, decimal defaultValue)
+    {
+        if (string.IsNullOrEmpty(textValue))
+            return defaultValue;
+        var value = Convert.ToDecimal(textValue);
+        return Math.Min(Math.Max(minValue, value), maxValue);
+    }
+    void OnCustomizeElement(GridCustomizeElementEventArgs args)
+    {
+        if (args.ElementType == GridElementType.HeaderRow)
         {
-            e.CssClass = "d-none";
+            args.CssClass = "d-none";
         }
+        else if (args.ElementType == GridElementType.DetailCell)
+        {
+            args.Style = "border-left: none; border-right: none;";
+        }
+    }
+
+    void SelectedAreaChanged(Metro_Area area)
+    {
+        MetroArea = area;
+    }
+    // protected void BookItButton_Click(object sender, EventArgs e)
+    // {
+    //     var container = ((ASPxButton)sender).BindingContainer as DataViewItemTemplateContainer;
+    //     var hotel = container.DataItem as Hotel;
+    //     var parameters = State.GetQueryParameters(false);
+    //     parameters["hotelID"] = hotel.ID.ToString();
+    //     parameters["roomID"] = hotel.Rooms.Aggregate((room, r) => (room == null || r.Nighly_Rate.Value < room.Nighly_Rate.Value ? room : r)).ID.ToString();
+    //     Response.Redirect("Booking.aspx?" + DataProvider.GetQueryString(parameters));
+    // }
+    protected void FilterTokenBox_ValueChanged(object sender, EventArgs e)
+    {
+        EnsureTokensList(true);
+    }
+
+    public class RatingItem
+    {
+        public string? ImageUrl { get; set; }
+        public int Value { get; set; }
     }
 }
