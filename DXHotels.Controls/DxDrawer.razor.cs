@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DXHotels.Controls
-{
+{    
     public enum DrawerExpandMode { Move, Shrink, Push };
     public partial class DxDrawer
     {
-        const string jsFile = "./_content/DXHotels.Controls/DxDrawer.razor.js";
-        bool isSsr => JsRuntime == null; //serverside statically rendered
+        const string jsFile = "./_content/DXHotels.Controls/DxDrawer.razor.js";        
         protected Lazy<Task<IJSObjectReference>> moduleTask;
         protected DotNetObjectReference<DxDrawer> dotNetObjectReference;
 
@@ -31,7 +30,8 @@ namespace DXHotels.Controls
             if (moduleTask != null && moduleTask.IsValueCreated)
             {
                 var module = await moduleTask.Value;
-                await module.InvokeVoidAsync("disposeDrawerObserver");
+                if (!RenderStatic) 
+                    await module.InvokeVoidAsync("disposeDrawerObserver");
                 await module.DisposeAsync();
             }
         }
@@ -48,12 +48,12 @@ namespace DXHotels.Controls
 
         public bool IsFullExpand { get; set; }
 
+        [Parameter] public bool RenderStatic { get; set; } = false;
         [Parameter] public int FullExpandWidth { get; set; } = 1200;
         [Parameter] public DrawerExpandMode Mode { get; set; } = DrawerExpandMode.Push;
 
         [Parameter] public string? LeftHamburgerSelector { get; set; }
         [Parameter] public string? RightHamburgerSelector { get; set; }
-
 
 #pragma warning disable BL0007
         private bool _LeftPanelVisible;
@@ -81,11 +81,9 @@ namespace DXHotels.Controls
         [Parameter] public string CssClassContent { get; set; } = "";
 
         [Parameter] public RenderFragment? Content { get; set; }
-
-        bool rendered = false;
+        
         protected async override Task OnAfterRenderAsync(bool firstRender)
-        {
-            rendered = true;
+        {            
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
