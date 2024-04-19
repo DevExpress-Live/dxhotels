@@ -1,0 +1,36 @@
+@inherits ComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JsRuntime
+
+<style>
+    :scope {
+        --drawer-full-expand: @FullExpandWidth;
+        --drawer-left-width: @LeftPanelWidth;
+        --drawer-right-width: @RightPanelWidth;
+    }
+</style>
+
+<div @ref="dxDrawer" id="dxdrawer"class="@ControlClass">    
+    @if (LeftPanel != default)
+    {
+        <div class="@LeftPanelClass">
+            @LeftPanel
+        </div>
+    }
+    <div class="@ContentClass">
+        @Content
+    </div>
+    @if (RightPanel != default)
+    {
+        <div class="@RightPanelClass">
+            @RightPanel
+        </div>
+    }
+</div>
+@if(isSsr)
+{
+    <script type="module">
+        import { dxdrawerInitialize } from '@jsFile';
+        @InlineScript
+    </script>    
+}

@@ -2,9 +2,28 @@
 @inject NavigationManager NavigationManager
 
 <div class="page">
-    <HeaderControl></HeaderControl>
-    
-    @Body
+    <DxDrawer CssClass="myCtrl" FullExpandWidth="1200" Mode="DrawerExpandMode.Push"
+              LeftPanelWidth="250px" RightPanelWidth="400px" 
+              LeftHamburgerSelector="#hamburger-left" 
+              RightHamburgerSelector="#hamburger-right"
+              RightPanelFixed="false"
+              @bind-LeftPanelVisible="@LeftVisible"
+              @bind-RightPanelVisible="@RightVisible">
+        <LeftPanel>
+            <h2>Navigation</h2>
+        </LeftPanel>
+        <Content>
+            <HeaderControl></HeaderControl>
+            @Body
+        </Content>
+        <RightPanel>
+            <h2>Shopping card</h2>
+        </RightPanel>
+    </DxDrawer>
 </div>
 @code {
+
+    public bool LeftVisible { get; set; } = false;
+    public bool RightVisible { get; set; } = false;
+
 }
