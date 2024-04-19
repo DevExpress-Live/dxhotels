@@ -1,0 +1,55 @@
+﻿
+.star-rating {
+    --bg-star: url('data:image/svg+xml,<svg />');
+    --bg-rated: url('data:image/svg+xml,<svg />');
+    --bg-hover: url('data:image/svg+xml,<svg />');
+    font-size: 0;
+    white-space: nowrap;
+    display: inline-block;
+    width: 125px;
+    height: 25px;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-star);
+    background-size: contain;
+}
+
+    .star-rating::before {
+        
+        content: "";
+        display: block;
+        width: 0;
+        height: 25px;
+        background: var(--bg-rated);
+        background-size: contain;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+    }
+
+.star-rating:hover {
+    cursor: pointer;
+}
+
+    .star-rating:hover::before {
+        background: var(--bg-hover);
+        background-size: contain;
+    }
+
+.star-rating[data-stars="0.5"]::before { width: 10%; }
+.star-rating[data-stars="1"]::before { width: 20%; }
+.star-rating[data-stars="1.5"]::before { width: 30%; }
+.star-rating[data-stars="2"]::before {width: 40%;}
+.star-rating[data-stars="2.5"]::before { width: 50%; }
+.star-rating[data-stars="3"]::before { width: 60%; }
+.star-rating[data-stars="3.5"]::before { width: 70%; }
+.star-rating[data-stars="4"]::before {width: 80%; }
+.star-rating[data-stars="4.5"]::before { width: 90%; }
+.star-rating[data-stars="5"]::before {width: 100%; }
+
+.star-rating[data-hover-stars="1"]::before { width: 20%; }
+.star-rating[data-hover-stars="2"]::before { width: 40%; }
+.star-rating[data-hover-stars="3"]::before { width: 60%; }
+.star-rating[data-hover-stars="4"]::before { width: 80%; }
+.star-rating[data-hover-stars="5"]::before { width: 100%; }

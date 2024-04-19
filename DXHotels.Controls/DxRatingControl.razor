@@ -1,0 +1,73 @@
+@implements IAsyncDisposable
+@inject IJSRuntime JSRuntime
+
+<div @ref="DXWidget" class="star-rating" data-stars="@Value.ToString("#.#")" data-hover-stars="@hoverStars"
+    style="@styles"
+     @onmousemove="@OnMouseMove"
+     @onmouseleave="@OnMouseLeave" @onclick="OnClick">
+
+</div>
+
+@code {
+    const string svg = "{0}: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"{1}\" viewBox=\"0 0 25 25\"><polygon points=\"12.5,2.5 15.5,9.5 23,9.5 17,14.5 19.5,22.5 12.5,17.5 5.5,22.5 8,14.5 2,9.5 9.5,9.5\" /></svg>')";
+
+    private double hoverStars = 0;
+
+    private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+    protected ElementReference DXWidget { get; set; } = default!;
+
+    string styles => string.Join(";",
+        string.Format(svg, "--bg-star", EmptyStarColor),
+        string.Format(svg, "--bg-rated", RatedStarColor),
+        string.Format(svg, "--bg-hover", Readonly ? RatedStarColor : HoverStarColor)
+    );
+
+    [Parameter] public double Value { get; set; } = 2.5;
+    [Parameter] public EventCallback<double> ValueChanged { get; set; }
+
+    [Parameter] public string EmptyStarColor { get; set; } = "gray";
+    [Parameter] public string RatedStarColor { get; set; } = "gold";
+    [Parameter] public string HoverStarColor { get; set; } = "orange";
+    [Parameter] public bool Readonly { get; set; } = false;
+
+
+    public DxRatingControl()
+    {
+        moduleTask = new(() => JSRuntime.InvokeAsync<IJSObjectReference>(
+            "import", "./_content/DXHotels.Controls/DxRatingControl.razor.js").AsTask());
+    }
+
+    async Task OnClick(MouseEventArgs e)
+    {
+        if (!Readonly)
+        {
+            var module = await moduleTask.Value;
+            var fraction = await module.InvokeAsync<double>("getFraction", DXWidget, e);
+            Value = Math.Ceiling(fraction * 5);
+        }
+    }
+
+    void OnMouseLeave()
+    {
+        hoverStars = 0;
+    }
+
+    async Task OnMouseMove(MouseEventArgs e)
+    {
+        if (!Readonly)
+        {
+            var module = await moduleTask.Value;
+            var fraction = await module.InvokeAsync<double>("getFraction", DXWidget, e);
+            hoverStars = Math.Ceiling(fraction * 5);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (moduleTask.IsValueCreated)
+        {
+            var module = await moduleTask.Value;
+            await module.DisposeAsync();
+        }
+    }
+}

@@ -25,8 +25,16 @@ namespace DxHotels.Blazor.Components.Pages
 
         protected override void OnInitialized()
         {
+            //State = new SearchState(Name, NavigationManager.QueryString(), DataContext);
+            //if(!State.ValidState)
+            //    NavigationManager.NavigateTo("/");
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
             State = new SearchState(Name, NavigationManager.QueryString(), DataContext);
-            if(!State.ValidState)
+            if (!State.ValidState)
                 NavigationManager.NavigateTo("/");
         }
     }
