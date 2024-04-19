@@ -1,0 +1,166 @@
+﻿/* Hamburger menu on the left */
+.hamburger-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    padding: 10px;
+    cursor: pointer;
+}
+
+    .hamburger-left span {
+        display: block;
+        width: 30px;
+        height: 3px;
+        margin-bottom: 5px;
+        background-color: #333;
+    }
+/* Hamburger menu on the right */
+.hamburger-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    padding: 10px;
+    cursor: pointer;
+}
+
+    .hamburger-right span {
+        display: block;
+        width: 30px;
+        height: 3px;
+        margin-bottom: 5px;
+        background-color: #333;
+    }
+
+.drawer-container {
+    min-height: 95vh;
+    width: 100%
+}
+
+.drawer-content {
+    transition: margin 0.3s ease-in-out;
+    min-height: 95vh;
+}
+
+
+.drawer-left {
+    padding-top: 30px;
+    top: 0;
+    position: fixed;
+    left: calc(0px - var(--drawer-left-width));
+    width: var(--drawer-left-width);
+    height: 100%;
+    max-height: 100%;
+    z-index: 15000;
+}
+
+/* Show menu */
+.show-drawer-left .drawer-left {
+    left: 0;
+}
+
+
+.show-drawer-left.drawer-shrink-content .drawer-content {
+    margin-left: var(--drawer-left-width);
+}
+
+.drawer-container.drawer-push-content {
+    overflow-x: hidden;
+}
+
+.drawer-container.show-drawer-left.drawer-push-content .drawer-content {
+    margin-left: var(--drawer-left-width);
+    margin-right: calc(0px - var(--drawer-left-width));
+    overflow-x: hidden;
+}
+
+/* Menu Right*/
+.drawer-right {
+    padding-top: 30px;
+    top: 0;
+    position: fixed;
+    right: calc(0px - var(--drawer-right-width));
+    width: var(--drawer-right-width);
+    height: 100%;
+    z-index: 15000;
+}
+
+    .drawer-right ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .drawer-right li {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+/* Show menu */
+.show-drawer-right .drawer-right {
+    right: 0;
+}
+
+.show-drawer-right.drawer-shrink-content .drawer-content {
+    margin-right: var(--drawer-right-width);
+}
+
+.drawer-container.show-drawer-right.drawer-push-content .drawer-content {
+    margin-right: var(--drawer-right-width);
+    margin-left: calc(0px - var(--drawer-right-width));
+    overflow-x: hidden;
+}
+
+
+
+/* Media query */
+/* Cannot be used because we cannot use css vars for the condition */
+/*
+@media only screen and (min-width: var(--drawer-full-expand)) {
+    body {
+        margin: 0px 0px 0px 0px;
+    }
+
+    .hamburger-left, .hamburger-right {
+        display: none;
+    }
+
+    .drawer-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .drawer-content {
+        width: 100%;
+        min-height: 100vh;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
+    .drawer-left {
+        position: static;
+        height: 100%;
+        transition: left 0.3s ease-in-out;
+        left: 0;
+        flex: 0 0 var(--drawer-left-width);
+    }
+
+    .drawer-right {
+        position: static;
+        height: auto;
+        transition: right 0.3s ease-in-out;
+        right: 0;
+        flex: 0 0 var(--drawer-right-width);
+    }
+
+        .drawer-container.drawer-left ul, .drawer-right ul {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer-container.drawer-left li, .drawer-right li {
+            border-bottom: none;
+        }
+}
+*/
