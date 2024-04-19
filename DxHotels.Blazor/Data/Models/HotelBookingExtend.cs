@@ -64,7 +64,8 @@ namespace DxHotels.Blazor.Data.Models
         public decimal Customer_Rating {
             get {
                 //TODO
-                return 0;// DataProvider.CustomRatings.ContainsKey(ID) ? DataProvider.CustomRatings[ID] : Convert.ToDecimal(Avg_Customer_Rating.Value);
+                return DataProvider.CustomRatings(ID, (i) => Convert.ToDecimal(Avg_Customer_Rating ?? 0));
+                //return 0;// DataProvider.CustomRatings.ContainsKey(ID) ? DataProvider.CustomRatings[ID] : Convert.ToDecimal(Avg_Customer_Rating.Value);
             }
         }
     }

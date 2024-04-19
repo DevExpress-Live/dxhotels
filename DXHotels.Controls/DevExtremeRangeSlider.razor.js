@@ -1,4 +1,5 @@
-﻿export async function initializeRangeSlider(dotNetHelper, element, options) {
+﻿let valueChanging = false;
+export async function initializeRangeSlider(dotNetHelper, element, options) {
 
     var o = options || {};
     o.tooltip = {
@@ -9,12 +10,21 @@
         showMode: 'always',
         position: 'bottom'
     };
-    o.valueChangeMode = 'onHandleRelease';
+    //o.valueChangeMode = 'onHandleRelease';
     //Event initialization
     o.onContentReady = async (e) => await dotNetHelper.invokeMethodAsync('JSContentReady');
     o.onDisposing = async (e) => await dotNetHelper.invokeMethodAsync('JSDisposing');
     o.onInitialized = async (e) => await dotNetHelper.invokeMethodAsync('JSInitialized');
-    o.onValueChanged = async (e) => await dotNetHelper.invokeMethodAsync('JSValueChanged', e.value, e.start, e.end, e.previousValue);
+    o.onValueChanged = async (e) => {
+        if (valueChanging) return;
+        valueChanging = true;
+        try {
+            await dotNetHelper.invokeMethodAsync('JSValueChanged', e.value, e.start, e.end, e.previousValue);
+        }
+        finally {
+            valueChanging = false;
+        }
+    }
     //o.onOptionChanged = (e) => {
     //    try {
     //        dotNetHelper.invokeMethodAsync('JSOptionChanged', e.value, e.previousValue, e.name, e.fullName);

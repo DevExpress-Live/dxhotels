@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .star-rating {
+            --bg-star: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="gray" viewBox="0 0 25 25"><polygon points="12.5,2.5 15.5,9.5 23,9.5 17,14.5 19.5,22.5 12.5,17.5 5.5,22.5 8,14.5 2,9.5 9.5,9.5" /></svg>');
+            --bg-rated: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="gold" viewBox="0 0 25 25"><polygon points="12.5,2.5 15.5,9.5 23,9.5 17,14.5 19.5,22.5 12.5,17.5 5.5,22.5 8,14.5 2,9.5 9.5,9.5" /></svg>');
+            --bg-hover: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 25 25"><polygon points="12.5,2.5 15.5,9.5 23,9.5 17,14.5 19.5,22.5 12.5,17.5 5.5,22.5 8,14.5 2,9.5 9.5,9.5" /></svg>');
+            font-size: 0;
+            white-space: nowrap;
+            display: inline-block;
+            width: 125px;
+            height: 25px;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-star);
+            background-size: contain;
+        }
+
+            .star-rating::before {
+        
+                content: "";
+                display: block;
+                width: 0;
+                height: 25px;
+                background: var(--bg-rated);
+                background-size: contain;
+                position: absolute;
+                top: 0;
+                left: 0;
+                overflow: hidden;
+            }
+
+        .star-rating:hover {
+            cursor: pointer;
+        }
+
+            .star-rating:hover::before {
+                background: var(--bg-hover);
+                background-size: contain;
+            }
+
+        .star-rating[data-stars="0.5"]::before { width: 10%; }
+        .star-rating[data-stars="1"]::before { width: 20%; }
+        .star-rating[data-stars="1.5"]::before { width: 30%; }
+        .star-rating[data-stars="2"]::before {width: 40%;}
+        .star-rating[data-stars="2.5"]::before { width: 50%; }
+        .star-rating[data-stars="3"]::before { width: 60%; }
+        .star-rating[data-stars="3.5"]::before { width: 70%; }
+        .star-rating[data-stars="4"]::before {width: 80%; }
+        .star-rating[data-stars="4.5"]::before { width: 90%; }
+        .star-rating[data-stars="5"]::before {width: 100%; }
+
+        .star-rating[data-hover-stars="1"]::before { width: 20%; }
+        .star-rating[data-hover-stars="2"]::before { width: 40%; }
+        .star-rating[data-hover-stars="3"]::before { width: 60%; }
+        .star-rating[data-hover-stars="4"]::before { width: 80%; }
+        .star-rating[data-hover-stars="5"]::before { width: 100%; }        
+    </style>
+</head>
+<body>
+
+    <div class="star-rating" data-stars="2.5" data-hover-stars="0">
+        <div class="tooltip"></div>
+    </div>
+
+
+    <script>
+        function getFraction(element, args) {
+            var x = args.pageX - element.offsetLeft; // Get the horizontal coordinate of the mouse
+            var width = element.offsetWidth; // Get the width of the star rating control
+            var fraction = x / width; // Calculate the fraction of the star that the mouse is over    
+            return fraction;
+        }
+        window.onload = function () {
+            var dxCtrl = document.querySelector('.star-rating');
+
+            dxCtrl.addEventListener('click', function (e) {
+                var fraction = getFraction(dxCtrl, e);
+                var newRating = Math.ceil(fraction * 5); // Convert the fraction to a rating out of 5
+                this.setAttribute('data-stars', newRating); // Set the new rating
+            });
+
+            dxCtrl.addEventListener('mousemove', function (e) {
+                var fraction = getFraction(dxCtrl, e);
+                var hoverStars = Math.ceil(fraction * 5); // Convert the fraction to a rating out of 5
+                dxCtrl.setAttribute('data-hover-stars', hoverStars); // Set the new rating
+            });
+
+            dxCtrl.addEventListener('mouseleave', function(e) {
+                dxCtrl.style.setProperty('--star-value', dxCtrl.getAttribute('data-stars'));
+            });
+    
+        };
+
+    </script>
+</body>
+</html>

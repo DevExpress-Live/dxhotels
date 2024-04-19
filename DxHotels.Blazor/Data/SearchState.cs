@@ -80,7 +80,7 @@ public class SearchState {
     public int[] FilterOurRatingArray {
         get {
             if(string.IsNullOrEmpty(FilterOurRating))
-                return new int[] { 1, 2, 3, 4, 5 };
+                return [ 1, 2, 3, 4, 5 ];
             else
                 return FilterOurRating.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
         }

@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using DxHotels.Blazor.Data.Models;
 using DevExpress.Data.Browsing;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 
 public class HotelDataService
 {
@@ -28,18 +29,24 @@ public class HotelDataService
 public class DataProvider {
     const int MaxDaysCountForReport = 15;
 
-    static Dictionary<int, decimal> ratings = new Dictionary<int, decimal>();
-    public static Dictionary<int, decimal> CustomRatings
+    //static Dictionary<int, decimal> ratings = new Dictionary<int, decimal>();
+    //public static Dictionary<int, decimal> CustomRatings
+    //{
+    //    get
+    //    {
+    //        return ratings;
+    //        //ratings.GetOrAdd
+    //        //return new Dictionary<int, decimal>();
+    //        //if(HttpContext.Current.Session["CustomRatings"] == null)
+    //        //    HttpContext.Current.Session["CustomRatings"] = new Dictionary<int, decimal>();
+    //        //return (Dictionary<int, decimal>)HttpContext.Current.Session["CustomRatings"];
+    //    }
+    //}
+    readonly static ConcurrentDictionary<int, decimal> ratingCache = new ConcurrentDictionary<int, decimal>();
+
+    public static decimal CustomRatings(int id, Func<int, decimal> getRateFunc)
     {
-        get
-        {
-            return ratings;
-            //ratings.GetOrAdd
-            //return new Dictionary<int, decimal>();
-            //if(HttpContext.Current.Session["CustomRatings"] == null)
-            //    HttpContext.Current.Session["CustomRatings"] = new Dictionary<int, decimal>();
-            //return (Dictionary<int, decimal>)HttpContext.Current.Session["CustomRatings"];
-        }
+        return ratingCache.GetOrAdd(id, getRateFunc(id));
     }
 
     public static List<string> LocationRatings = new List<string>() { "BBB", "A", "AA", "AAA" };
